@@ -1,0 +1,18 @@
+{
+  "name": "for-nyeleti-api",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Cloudflare Worker that receives PayFast ITN webhooks and serves /summary for the Nyeleti PMP crowdfunding page.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/verify.test.js",
+    "preflight": "npm ls --all && npm audit --audit-level=moderate",
+    "dev": "wrangler dev",
+    "deploy": "npm run preflight && wrangler deploy"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "wrangler": "4.88.0"
+  }
+}

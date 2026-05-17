@@ -1,0 +1,27 @@
+# Copy this file to .dev.vars (gitignored) for local `wrangler dev`.
+# Never commit .dev.vars. Never use these values in production.
+#
+# How to use this for local end-to-end testing:
+#
+#   1. Pull this into .dev.vars and replace YOUR-SANDBOX-PASSPHRASE-HERE
+#      with the sandbox passphrase you retrieve from PayFast's Developer Portal.
+#
+#   2. Start a 5-line mock validate server in a second terminal that always
+#      returns "VALID" (so layer 3 is exercised without needing real sandbox traffic):
+#        node -e 'require("http").createServer((q,r)=>r.end("VALID")).listen(9999, ()=>console.log("validate-mock on :9999"))'
+#
+#   3. wrangler dev
+#
+#   4. Hand-curl a signed ITN to http://localhost:8787/webhook.
+#
+# In production these vars are either set via `wrangler secret put` (PAYFAST_PASSPHRASE)
+# or are absent entirely (PAYFAST_VALIDATE_BASE_URL must be UNSET in prod).
+
+# Sandbox passphrase from PayFast Developer Portal. Never the live passphrase.
+PAYFAST_PASSPHRASE = "YOUR-SANDBOX-PASSPHRASE-HERE"
+
+# Local IP allowlist override so curl from 127.0.0.1 isn't blocked by layer 1.
+PAYFAST_ALLOWED_IPS = "127.0.0.1,::1"
+
+# Validate callback override. Points at the local mock above. NEVER set in prod.
+PAYFAST_VALIDATE_BASE_URL = "http://127.0.0.1:9999"

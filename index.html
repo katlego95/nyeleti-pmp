@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#FBF6EF">
+  <title>Help fund Nyeleti's PMP</title>
+  <meta name="description" content="A small private crowdfunding page to help fund Nyeleti's PMP certification exam.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <h1>Help fund Nyeleti's PMP</h1>
+      <p class="note">[KATLEGO'S NOTE HERE]</p>
+    </header>
+
+    <section class="progress" aria-live="polite">
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="bar">
+        <div class="bar__fill" id="bar-fill"></div>
+      </div>
+      <p class="amounts" id="amounts">Loading…</p>
+    </section>
+
+    <section class="cta">
+      <button type="button" id="contribute-btn" class="cta-btn">Contribute</button>
+      <p class="cta-help">Tap Contribute, pay by card or Instant EFT &mdash; your contribution lands on the bar within a minute.</p>
+    </section>
+
+    <dialog id="amount-dialog" class="amount-dialog" aria-labelledby="amount-dialog-title">
+      <form method="dialog" id="amount-form">
+        <h2 id="amount-dialog-title">Choose an amount</h2>
+        <div class="chips" role="group" aria-label="Suggested amounts">
+          <button type="button" class="chip" data-amount="100">R100</button>
+          <button type="button" class="chip" data-amount="200">R200</button>
+          <button type="button" class="chip" data-amount="500">R500</button>
+          <button type="button" class="chip" data-amount="1000">R1 000</button>
+        </div>
+        <label class="other">
+          <span>Or enter another amount (R)</span>
+          <input type="number" id="custom-amount" min="10" max="100000" step="1" inputmode="decimal" placeholder="e.g. 350" autocomplete="off">
+        </label>
+        <div class="dialog-actions">
+          <button type="button" class="cancel" id="amount-cancel">Cancel</button>
+          <button type="submit" class="confirm" id="amount-confirm">Continue to payment</button>
+        </div>
+      </form>
+    </dialog>
+
+    <form id="payfast-form" action="" method="post" hidden>
+      <input type="hidden" name="merchant_id">
+      <input type="hidden" name="merchant_key">
+      <input type="hidden" name="return_url">
+      <input type="hidden" name="cancel_url">
+      <input type="hidden" name="notify_url">
+      <input type="hidden" name="item_name" value="Contribution to Nyeleti's PMP">
+      <input type="hidden" name="email_confirmation" value="1">
+      <input type="hidden" name="amount" id="payfast-amount">
+    </form>
+
+    <div id="toast" class="toast" role="status" hidden></div>
+
+    <footer>
+      <small>Thank you for being here. &mdash; K</small>
+    </footer>
+  </main>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

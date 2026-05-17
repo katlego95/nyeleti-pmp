@@ -1,0 +1,42 @@
+{
+  "_comment": "Canonical PayFast ITN fixture for unit-testing the signature verifier. Built by hand from the algorithm in PayFast's official PHP SDK (lib/PaymentIntegrations/Notification.php — dataToString + pfValidSignature). See SPEC-VERIFICATION.md for sourcing. The fixture exercises space encoding (`+`) and apostrophe encoding (`%27`) because those are where naive JS encoders diverge from PHP urlencode.",
+
+  "passphrase": "test-passphrase",
+
+  "fields_in_post_order": [
+    ["m_payment_id",    "internal-001"],
+    ["pf_payment_id",   "1234567"],
+    ["payment_status",  "COMPLETE"],
+    ["item_name",       "Contribution to Nyeleti's PMP"],
+    ["amount_gross",    "100.00"],
+    ["amount_fee",      "-3.50"],
+    ["amount_net",      "96.50"],
+    ["name_first",      "Test"],
+    ["name_last",       "User"],
+    ["email_address",   "test@example.com"],
+    ["merchant_id",     "10000100"],
+    ["test_mode",       "true"]
+  ],
+
+  "expected_canonical_string": "m_payment_id=internal-001&pf_payment_id=1234567&payment_status=COMPLETE&item_name=Contribution+to+Nyeleti%27s+PMP&amount_gross=100.00&amount_fee=-3.50&amount_net=96.50&name_first=Test&name_last=User&email_address=test%40example.com&merchant_id=10000100&test_mode=true&passphrase=test-passphrase",
+
+  "expected_signature": "e7615a4c5dad35b4039139fb0a368b5f",
+
+  "raw_post_body": "m_payment_id=internal-001&pf_payment_id=1234567&payment_status=COMPLETE&item_name=Contribution+to+Nyeleti%27s+PMP&amount_gross=100.00&amount_fee=-3.50&amount_net=96.50&name_first=Test&name_last=User&email_address=test%40example.com&merchant_id=10000100&test_mode=true&signature=e7615a4c5dad35b4039139fb0a368b5f",
+
+  "negative_cases": {
+    "tampered_amount": {
+      "raw_post_body": "m_payment_id=internal-001&pf_payment_id=1234567&payment_status=COMPLETE&item_name=Contribution+to+Nyeleti%27s+PMP&amount_gross=999.00&amount_fee=-3.50&amount_net=96.50&name_first=Test&name_last=User&email_address=test%40example.com&merchant_id=10000100&test_mode=true&signature=e7615a4c5dad35b4039139fb0a368b5f",
+      "reason": "amount_gross was changed from 100.00 to 999.00; the original signature must no longer verify"
+    },
+    "swapped_passphrase": {
+      "passphrase": "wrong-passphrase",
+      "raw_post_body_same_as_positive_case": true,
+      "reason": "passphrase is wrong; the original signature must no longer verify"
+    },
+    "missing_signature": {
+      "raw_post_body": "m_payment_id=internal-001&pf_payment_id=1234567&payment_status=COMPLETE&item_name=Contribution+to+Nyeleti%27s+PMP&amount_gross=100.00&amount_fee=-3.50&amount_net=96.50&name_first=Test&name_last=User&email_address=test%40example.com&merchant_id=10000100&test_mode=true",
+      "reason": "no signature field at all; verifier must reject"
+    }
+  }
+}
