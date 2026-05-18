@@ -3,7 +3,7 @@ main = "index.js"
 compatibility_date = "2024-11-01"
 
 [vars]
-GOAL_ZAR = "9700"
+GOAL_ZAR = "10000"
 ALLOWED_ORIGIN = "https://YOUR_GITHUB_USERNAME.github.io"
 PAYFAST_MERCHANT_ID = "12740752"
 # Source IP allowlist for PayFast ITN. Sourced from PayFast's AWS-migration KB

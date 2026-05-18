@@ -177,7 +177,9 @@ async function handleSummary(request, env, ctx) {
       for (const { name } of list.keys) {
         const entry = await env.PAYMENTS.get(name, 'json');
         if (!entry || entry.mode !== 'live') continue;
-        const cents = Math.round(Number(entry.amount_gross || 0) * 100);
+        // /summary reports what actually reaches Nyeleti after PayFast's processing fee,
+        // so we aggregate amount_net (gross minus fee) for both payments and refunds.
+        const cents = Math.round(Number(entry.amount_net || 0) * 100);
         if (prefix === 'payment:') paidCents += cents;
         else refundedCents += cents;
       }
