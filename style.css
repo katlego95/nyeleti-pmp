@@ -1,157 +1,523 @@
+/* ───────────────────────────────────────────────────────────────
+   Palette & tokens
+   PMI 2019 rebrand: tangerine, aqua, violet, deployed boldly.
+   ─────────────────────────────────────────────────────────────── */
 :root {
   --tangerine: #F58220;
+  --tangerine-dark: #D26200;
   --aqua:      #00B8B0;
+  --aqua-dark: #007D77;
   --violet:    #6B2C91;
-  --bg:        #FBF6EF;
-  --text:      #1A1A1A;
-  --muted:     #5C5C5C;
-  --line:      rgba(0, 0, 0, 0.08);
-  --shadow:    0 6px 20px rgba(245, 130, 32, 0.28);
+  --violet-deep: #3B144F;
+
+  --ink:       #0A0A0A;
+  --ink-soft:  #4A4A4A;
+  --ink-mute:  #767676;
+
+  --bg:        #FAF7F2;          /* warm off-white */
+  --surface:   #FFFFFF;
+  --line:      rgba(10, 10, 10, 0.08);
+
+  --shadow-cta:  0 8px 24px rgba(245, 130, 32, 0.32);
+  --shadow-card: 0 12px 36px rgba(10, 10, 10, 0.08);
+
+  --space-section: clamp(56px, 9vw, 112px);
+  --container:   1100px;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
 
 html, body {
   margin: 0;
   padding: 0;
   background: var(--bg);
-  color: var(--text);
+  color: var(--ink);
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-weight: 400;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;          /* belt-and-braces against the angled dividers */
 }
 
-main {
-  max-width: 480px;
+img, svg { display: block; max-width: 100%; }
+
+a {
+  color: var(--violet);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
+}
+a:hover, a:focus-visible { color: var(--tangerine); }
+
+/* ───────────────────────────────────────────────────────────────
+   Layout primitives
+   ─────────────────────────────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: var(--container);
   margin: 0 auto;
-  padding: 36px 22px 56px;
+  padding: 0 22px;
 }
 
-.hero h1 {
-  font-size: 34px;
+section {
+  padding: var(--space-section) 0;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   Typography
+   ─────────────────────────────────────────────────────────────── */
+.display {
+  font-size: clamp(36px, 8vw, 60px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 22px;
+}
+
+h2 {
+  font-size: clamp(26px, 4.5vw, 38px);
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: -0.015em;
   margin: 0 0 18px;
 }
 
-.note {
-  font-size: 17px;
-  margin: 0 0 32px;
-  color: var(--text);
+.word-pop {
+  color: var(--tangerine);
+  display: inline-block;
 }
 
-.progress { margin: 28px 0 36px; }
+.lede {
+  font-size: clamp(17px, 2.2vw, 20px);
+  line-height: 1.5;
+  margin: 0 0 28px;
+  max-width: 32ch;
+  color: var(--ink-soft);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   Hero
+   ─────────────────────────────────────────────────────────────── */
+.hero {
+  padding-top: clamp(36px, 8vw, 80px);
+  padding-bottom: clamp(48px, 9vw, 96px);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   Progress bar (used in hero + ready sections)
+   ─────────────────────────────────────────────────────────────── */
+.progress { margin: 28px 0 28px; max-width: 520px; }
+
+.amounts {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.amounts [data-raised] { color: var(--tangerine); }
 
 .bar {
   width: 100%;
   height: 18px;
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(10, 10, 10, 0.08);
   border-radius: 999px;
   overflow: hidden;
 }
-
-.bar__fill {
+.bar-fill {
   height: 100%;
   width: 0%;
   background: var(--aqua);
   border-radius: 999px;
-  transition: width 700ms cubic-bezier(0.16, 1, 0.3, 1), background 400ms ease;
+  transition: width 800ms cubic-bezier(0.16, 1, 0.3, 1), background 400ms ease;
 }
 
-.amounts {
-  margin: 14px 0 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--muted);
-}
-
-.cta { margin: 36px 0 0; text-align: center; }
-
-.cta-btn {
+/* ───────────────────────────────────────────────────────────────
+   CTA
+   ─────────────────────────────────────────────────────────────── */
+.cta {
   display: inline-block;
-  width: 100%;
-  max-width: 360px;
   background: var(--tangerine);
   color: #fff;
   font-family: inherit;
-  font-size: 19px;
   font-weight: 700;
-  padding: 18px 28px;
   border: none;
   border-radius: 16px;
   cursor: pointer;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-cta);
   transition: transform 100ms ease, box-shadow 200ms ease, background 300ms ease;
 }
-
-.cta-btn:hover,
-.cta-btn:focus-visible {
+.cta:hover, .cta:focus-visible {
   transform: translateY(-1px);
-  box-shadow: 0 8px 26px rgba(245, 130, 32, 0.38);
+  box-shadow: 0 12px 30px rgba(245, 130, 32, 0.42);
   outline: none;
 }
+.cta:active { transform: translateY(0); }
 
-.cta-btn:active { transform: translateY(0); }
-
-.cta-help {
-  font-size: 14px;
-  color: var(--muted);
+.cta--lg {
+  font-size: 19px;
+  padding: 18px 32px;
+  width: 100%;
   max-width: 360px;
-  margin: 14px auto 0;
-  line-height: 1.5;
 }
 
+.cta-micro {
+  margin: 14px 0 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-mute);
+  max-width: 420px;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   SVG dividers between sections
+   ─────────────────────────────────────────────────────────────── */
+.divider {
+  display: block;
+  width: 100%;
+  height: clamp(48px, 7vw, 80px);
+}
+.divider--tangerine { color: var(--tangerine); }
+.divider--aqua      { color: var(--aqua); }
+.divider--violet    { color: var(--violet); }
+
+/* ───────────────────────────────────────────────────────────────
+   "What is PMP" + stat block
+   ─────────────────────────────────────────────────────────────── */
+.what {
+  background: var(--bg);
+}
+
+.what__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 36px;
+  align-items: start;
+}
+@media (min-width: 880px) {
+  .what__grid {
+    grid-template-columns: 1.4fr 1fr;
+    gap: 56px;
+  }
+}
+
+.what__copy p {
+  font-size: clamp(16px, 1.8vw, 18px);
+  line-height: 1.65;
+  margin: 0 0 16px;
+}
+.what__more { margin-top: 20px; font-weight: 600; }
+
+.stats {
+  background: var(--violet);
+  color: #fff;
+  border-radius: 24px;
+  padding: 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  box-shadow: var(--shadow-card);
+}
+.stat { display: flex; flex-direction: column; gap: 4px; }
+.stat__num {
+  font-size: clamp(40px, 6vw, 56px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--tangerine);
+}
+.stat__label {
+  font-size: 14px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 500;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   The journey (vertical timeline with <details>)
+   ─────────────────────────────────────────────────────────────── */
+.journey { background: var(--bg); }
+
+.journey__sub {
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin: 0 0 28px;
+}
+
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.step {
+  position: relative;
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(10, 10, 10, 0.05);
+  /* connecting line down to next step */
+}
+.step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 36px;          /* aligns with circle centre (24px padding + 22px radius) */
+  top: 100%;
+  width: 3px;
+  height: 14px;
+  background: var(--line);
+}
+
+.step > details {
+  background: transparent;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.step > details > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  outline-offset: -3px;
+}
+.step > details > summary::-webkit-details-marker { display: none; }
+.step > details > summary:focus-visible { outline: 2px solid var(--tangerine); }
+
+.step__circle {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+}
+.step--done   .step__circle { background: var(--aqua); }
+.step--next   .step__circle { background: var(--tangerine); }
+.step--future .step__circle { background: var(--violet); }
+
+.step__head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.step__badge {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.step--done   .step__badge { color: var(--aqua-dark); }
+.step--next   .step__badge { color: var(--tangerine-dark); }
+.step--future .step__badge { color: var(--violet); }
+
+.step__title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.step__detail {
+  margin: 0;
+  padding: 0 20px 18px 72px;     /* indented under the circle */
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   Where R10,000 goes
+   ─────────────────────────────────────────────────────────────── */
+.cost { background: var(--bg); }
+
+.cost__card {
+  background: var(--aqua);
+  color: #fff;
+  border-radius: 24px;
+  padding: 24px 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.cost__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+}
+.cost__row--total {
+  border-bottom: none;
+  padding-bottom: 0;
+  padding-top: 6px;
+}
+.cost__item {
+  font-size: 16px;
+  font-weight: 600;
+}
+.cost__item small {
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+.cost__amt {
+  font-size: clamp(22px, 3.4vw, 28px);
+  font-weight: 800;
+  color: var(--tangerine);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.cost__row--total .cost__item { font-size: 18px; font-weight: 800; }
+.cost__row--total .cost__amt  { font-size: clamp(28px, 4.2vw, 36px); color: #fff; }
+
+.cost__note {
+  margin: 20px 4px 0;
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.cost__note strong { color: var(--violet); }
+
+/* ───────────────────────────────────────────────────────────────
+   Why this, why now (photo + note)
+   ─────────────────────────────────────────────────────────────── */
+.story { background: var(--bg); }
+
+.story__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: center;
+}
+@media (min-width: 760px) {
+  .story__grid {
+    grid-template-columns: 320px 1fr;
+    gap: 48px;
+  }
+}
+
+.story__photo {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(255, 255, 255, 0.18), transparent 55%),
+    linear-gradient(135deg, var(--violet) 0%, var(--violet-deep) 100%);
+  box-shadow: 0 18px 48px rgba(107, 44, 145, 0.28);
+  overflow: hidden;
+}
+.story__photo::after {
+  /* Tiny "photo coming" hint visible only when the gradient fallback is showing.
+     Disappears as soon as an <img> is uncommented (because the img covers it). */
+  content: "Photo coming";
+  position: absolute;
+  inset: auto 0 18px 0;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+.story__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 24px;
+}
+.story__photo img + ::after { display: none; }
+
+.story__copy p { margin: 0 0 14px; }
+.story__line {
+  font-size: clamp(17px, 2.2vw, 20px);
+  line-height: 1.5;
+  font-weight: 500;
+}
+.story__note {
+  font-size: clamp(16px, 1.8vw, 18px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  padding: 16px 18px;
+  background: var(--surface);
+  border-left: 4px solid var(--tangerine);
+  border-radius: 8px;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   Ready? (final CTA)
+   ─────────────────────────────────────────────────────────────── */
+.ready { background: var(--bg); text-align: left; }
+.ready__title { margin-bottom: 18px; }
+
+/* ───────────────────────────────────────────────────────────────
+   Footer
+   ─────────────────────────────────────────────────────────────── */
+footer {
+  padding: 40px 22px 56px;
+  text-align: center;
+  color: var(--ink-mute);
+  font-size: 13px;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   Amount-picker dialog
+   ─────────────────────────────────────────────────────────────── */
 .amount-dialog {
   border: none;
-  border-radius: 20px;
+  border-radius: 22px;
   padding: 28px 24px;
-  width: min(420px, 92vw);
-  background: #fff;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
+  width: min(440px, 92vw);
+  background: var(--surface);
+  box-shadow: 0 32px 80px rgba(10, 10, 10, 0.22);
   font-family: inherit;
-  color: var(--text);
+  color: var(--ink);
 }
-.amount-dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
-
-.amount-dialog h2 {
-  font-size: 22px;
-  font-weight: 800;
-  margin: 0 0 18px;
-}
+.amount-dialog::backdrop { background: rgba(10, 10, 10, 0.55); }
+.amount-dialog h2 { margin: 0 0 18px; }
 
 .chips {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin: 0 0 18px;
+  margin: 0 0 16px;
 }
-
 .chip {
   font-family: inherit;
   font-size: 17px;
   font-weight: 700;
   padding: 14px 0;
-  background: #fff;
-  color: var(--text);
+  background: var(--surface);
+  color: var(--ink);
   border: 2px solid var(--line);
   border-radius: 12px;
   cursor: pointer;
   transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
 }
-
-.chip:hover,
-.chip:focus-visible { border-color: var(--tangerine); outline: none; }
-
+.chip:hover, .chip:focus-visible { border-color: var(--tangerine); outline: none; }
 .chip[aria-pressed="true"] {
   background: var(--tangerine);
   color: #fff;
   border-color: var(--tangerine);
 }
 
-.other { display: block; font-size: 14px; color: var(--muted); margin: 0 0 22px; }
+.other { display: block; font-size: 13.5px; color: var(--ink-mute); margin: 4px 0 14px; }
 .other span { display: block; margin-bottom: 6px; }
 .other input {
   width: 100%;
@@ -160,10 +526,17 @@ main {
   padding: 12px 14px;
   border: 2px solid var(--line);
   border-radius: 12px;
-  background: #fff;
-  color: var(--text);
+  background: var(--surface);
+  color: var(--ink);
 }
 .other input:focus { outline: none; border-color: var(--aqua); }
+
+.dialog-fineprint {
+  font-size: 13px;
+  color: var(--ink-mute);
+  margin: 0 0 18px;
+  line-height: 1.55;
+}
 
 .dialog-actions { display: flex; gap: 10px; }
 .dialog-actions button {
@@ -176,10 +549,13 @@ main {
   cursor: pointer;
   border: none;
 }
-.cancel  { background: rgba(0, 0, 0, 0.05); color: var(--text); }
+.cancel  { background: rgba(10, 10, 10, 0.06); color: var(--ink); }
 .confirm { background: var(--tangerine); color: #fff; }
 .confirm[disabled] { opacity: 0.5; cursor: not-allowed; }
 
+/* ───────────────────────────────────────────────────────────────
+   Toast
+   ─────────────────────────────────────────────────────────────── */
 .toast {
   position: fixed;
   left: 50%;
@@ -190,44 +566,60 @@ main {
   padding: 14px 22px;
   border-radius: 999px;
   font-weight: 600;
-  font-size: 15px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  font-size: 14.5px;
+  box-shadow: 0 16px 40px rgba(10, 10, 10, 0.22);
   max-width: calc(100% - 32px);
   text-align: center;
   z-index: 100;
+  line-height: 1.45;
 }
-.toast.toast--soft { background: #fff; color: var(--text); border: 1px solid var(--line); }
+.toast.toast--soft { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
 
-footer {
-  margin: 56px 0 0;
-  text-align: center;
-  color: var(--muted);
-  font-size: 13px;
+/* ───────────────────────────────────────────────────────────────
+   Scroll-fade-in for journey steps (set by JS adding .in-view)
+   ─────────────────────────────────────────────────────────────── */
+.step {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+.step.in-view {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Goal-reached celebration state */
-body.goal-reached .bar__fill {
+/* ───────────────────────────────────────────────────────────────
+   Goal-reached celebration
+   ─────────────────────────────────────────────────────────────── */
+body.goal-reached .bar-fill {
   background: var(--violet);
-  animation: pulse 1.8s ease-in-out infinite;
+  animation: pulse-glow 1.8s ease-in-out infinite;
 }
-body.goal-reached .cta-btn {
+body.goal-reached .cta {
   background: var(--violet);
-  box-shadow: 0 6px 20px rgba(107, 44, 145, 0.32);
-  animation: pulse-soft 2.2s ease-in-out infinite;
+  box-shadow: 0 8px 24px rgba(107, 44, 145, 0.36);
+  animation: pulse-lift 2.2s ease-in-out infinite;
 }
+body.goal-reached .word-pop { color: var(--violet); }
+body.goal-reached .amounts [data-raised] { color: var(--violet); }
 
-@keyframes pulse {
+@keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(107, 44, 145, 0.45); }
-  50%      { box-shadow: 0 0 0 8px rgba(107, 44, 145, 0);    }
+  50%      { box-shadow: 0 0 0 10px rgba(107, 44, 145, 0);   }
 }
-@keyframes pulse-soft {
-  0%, 100% { transform: translateY(0);    box-shadow: 0 6px 20px rgba(107, 44, 145, 0.32); }
-  50%      { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(107, 44, 145, 0.46); }
+@keyframes pulse-lift {
+  0%, 100% { transform: translateY(0);    box-shadow: 0 8px 24px rgba(107, 44, 145, 0.36); }
+  50%      { transform: translateY(-1px); box-shadow: 0 12px 30px rgba(107, 44, 145, 0.48); }
 }
 
+/* ───────────────────────────────────────────────────────────────
+   Reduced motion
+   ─────────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .bar__fill, .cta-btn, .chip, .toast {
+  html { scroll-behavior: auto; }
+  .bar-fill, .cta, .chip, .toast, .step {
     transition: none !important;
     animation: none !important;
   }
+  .step { opacity: 1; transform: none; }
 }

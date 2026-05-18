@@ -10,24 +10,29 @@ const PAYFAST_PROCESS_URL  = 'https://sandbox.payfast.co.za/eng/process';
 const PAYFAST_MERCHANT_ID  = '__SANDBOX_MERCHANT_ID__';
 const PAYFAST_MERCHANT_KEY = '__SANDBOX_MERCHANT_KEY__';
 
-const GOAL_ZAR = 9700;
+const GOAL_ZAR = 10000;
 
 const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
 const formatRand = (n) =>
   'R' + Math.round(n).toLocaleString('en-ZA', { maximumFractionDigits: 0 });
 
 function renderProgress({ total_zar, goal_zar, percent }) {
-  $('#bar-fill').style.width = percent + '%';
-  $('#bar').setAttribute('aria-valuenow', String(percent));
-  $('#amounts').textContent = `${formatRand(total_zar)} of ${formatRand(goal_zar)}`;
+  $$('[data-bar-fill]').forEach((el) => { el.style.width = percent + '%'; });
+  $$('[data-bar]').forEach((el) => { el.setAttribute('aria-valuenow', String(percent)); });
+  $$('[data-raised]').forEach((el) => { el.textContent = formatRand(total_zar); });
+  $$('[data-goal]').forEach((el)   => { el.textContent = formatRand(goal_zar);  });
   if (percent >= 100) {
     document.body.classList.add('goal-reached');
-    $('#contribute-btn').textContent = 'We did it 🎉';
+    $$('[data-contribute]').forEach((btn) => { btn.textContent = 'We did it 🎉'; });
   }
 }
 
 function renderFailureState() {
-  $('#amounts').textContent = 'Updating shortly…';
+  $$('[data-amounts]').forEach((el) => {
+    el.innerHTML = '<span style="color:var(--ink-mute)">Updating shortly…</span>';
+  });
 }
 
 async function fetchSummary() {
@@ -44,6 +49,7 @@ async function fetchSummary() {
 
 function showToast(message, soft = false) {
   const t = $('#toast');
+  if (!t) return;
   t.textContent = message;
   t.hidden = false;
   t.classList.toggle('toast--soft', soft);
@@ -58,15 +64,13 @@ function readChosenAmount() {
 }
 
 function selectChip(value) {
-  document.querySelectorAll('.chip').forEach((c) => {
+  $$('.chip').forEach((c) => {
     c.setAttribute('aria-pressed', c.dataset.amount === String(value) ? 'true' : 'false');
   });
 }
 
 function clearChipSelection() {
-  document.querySelectorAll('.chip[aria-pressed="true"]').forEach((c) =>
-    c.setAttribute('aria-pressed', 'false'),
-  );
+  $$('.chip[aria-pressed="true"]').forEach((c) => c.setAttribute('aria-pressed', 'false'));
 }
 
 function submitPayfast(amount) {
@@ -86,16 +90,18 @@ function wireDialog() {
   const customInput = $('#custom-amount');
   const confirmBtn = $('#amount-confirm');
 
-  $('#contribute-btn').addEventListener('click', () => {
-    if (typeof dialog.showModal === 'function') {
-      dialog.showModal();
-    } else {
-      dialog.setAttribute('open', '');
-    }
-    setTimeout(() => customInput.focus(), 50);
+  $$('[data-contribute]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (typeof dialog.showModal === 'function') {
+        dialog.showModal();
+      } else {
+        dialog.setAttribute('open', '');
+      }
+      setTimeout(() => customInput.focus(), 50);
+    });
   });
 
-  document.querySelectorAll('.chip').forEach((chip) => {
+  $$('.chip').forEach((chip) => {
     chip.addEventListener('click', () => {
       const v = Number(chip.dataset.amount);
       customInput.value = String(v);
@@ -126,17 +132,36 @@ function handleReturnQuery() {
   const params = new URLSearchParams(location.search);
   if (params.get('paid') === '1') {
     showToast('Thank you! Your contribution is on its way.');
-    // PayFast ITN + KV propagation typically lands within ~30s; re-fetch once.
-    setTimeout(fetchSummary, 30000);
+    setTimeout(fetchSummary, 30000);     // single deferred re-fetch, not polling
   } else if (params.get('cancelled') === '1') {
     showToast('No worries — tap Contribute whenever you’re ready.', true);
   }
 }
 
+function observeStepFadeIn() {
+  const steps = $$('[data-step]');
+  if (!steps.length) return;
+  if (!('IntersectionObserver' in window) ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    steps.forEach((el) => el.classList.add('in-view'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    }
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  steps.forEach((el) => io.observe(el));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Pre-fill goal label immediately so the page doesn't sit on "Loading…" if /summary is slow.
-  $('#amounts').textContent = `Loading… of ${formatRand(GOAL_ZAR)}`;
+  // Show the goal in both progress sections immediately so the page never sits on "Loading…".
+  $$('[data-goal]').forEach((el) => { el.textContent = formatRand(GOAL_ZAR); });
   wireDialog();
   handleReturnQuery();
+  observeStepFadeIn();
   fetchSummary();
 });
