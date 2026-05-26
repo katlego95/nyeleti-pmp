@@ -12,7 +12,7 @@ const PAYFAST_MERCHANT_KEY = '__SANDBOX_MERCHANT_KEY__';
 
 const GOAL_ZAR = 10000;
 
-const $ = (sel) => document.querySelector(sel);
+const $  = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
 const formatRand = (n) =>
@@ -20,18 +20,18 @@ const formatRand = (n) =>
 
 function renderProgress({ total_zar, goal_zar, percent }) {
   $$('[data-bar-fill]').forEach((el) => { el.style.width = percent + '%'; });
-  $$('[data-bar]').forEach((el) => { el.setAttribute('aria-valuenow', String(percent)); });
-  $$('[data-raised]').forEach((el) => { el.textContent = formatRand(total_zar); });
-  $$('[data-goal]').forEach((el)   => { el.textContent = formatRand(goal_zar);  });
+  $$('[data-bar]').forEach((el)      => { el.setAttribute('aria-valuenow', String(percent)); });
+  $$('[data-raised]').forEach((el)   => { el.textContent = formatRand(total_zar); });
+  $$('[data-goal]').forEach((el)     => { el.textContent = formatRand(goal_zar);  });
   if (percent >= 100) {
     document.body.classList.add('goal-reached');
-    $$('[data-contribute]').forEach((btn) => { btn.textContent = 'We did it 🎉'; });
+    $$('[data-contribute]').forEach((btn) => { btn.textContent = 'Thank you'; });
   }
 }
 
 function renderFailureState() {
   $$('[data-amounts]').forEach((el) => {
-    el.innerHTML = '<span style="color:var(--ink-mute)">Updating shortly…</span>';
+    el.textContent = 'Updating shortly';
   });
 }
 
@@ -131,19 +131,19 @@ function wireDialog() {
 function handleReturnQuery() {
   const params = new URLSearchParams(location.search);
   if (params.get('paid') === '1') {
-    showToast('Thank you! Your contribution is on its way.');
+    showToast('Thank you. Your contribution is on its way.');
     setTimeout(fetchSummary, 30000);     // single deferred re-fetch, not polling
   } else if (params.get('cancelled') === '1') {
     showToast('No worries — tap Contribute whenever you’re ready.', true);
   }
 }
 
-function observeStepFadeIn() {
-  const steps = $$('[data-step]');
-  if (!steps.length) return;
+function observeSectionFadeIn() {
+  const sections = $$('[data-section]');
+  if (!sections.length) return;
   if (!('IntersectionObserver' in window) ||
       window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    steps.forEach((el) => el.classList.add('in-view'));
+    sections.forEach((el) => el.classList.add('in-view'));
     return;
   }
   const io = new IntersectionObserver((entries) => {
@@ -153,15 +153,15 @@ function observeStepFadeIn() {
         io.unobserve(entry.target);
       }
     }
-  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-  steps.forEach((el) => io.observe(el));
+  }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+  sections.forEach((el) => io.observe(el));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Show the goal in both progress sections immediately so the page never sits on "Loading…".
+  // Seed the goal text so the strip shows "R0 raised of R10,000" before /summary returns.
   $$('[data-goal]').forEach((el) => { el.textContent = formatRand(GOAL_ZAR); });
   wireDialog();
   handleReturnQuery();
-  observeStepFadeIn();
+  observeSectionFadeIn();
   fetchSummary();
 });
