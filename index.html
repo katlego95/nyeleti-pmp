@@ -5,277 +5,165 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#FAF7F2">
   <title>Help launch Nyeleti's PMP</title>
-  <meta name="description" content="Help launch Nyeleti's PMP — a small private crowdfunding page for friends and family to chip in toward her global project management certification.">
+  <meta name="description" content="A private crowdfund toward Nyeleti's PMI Project Management Professional certification.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- ─────────────────────────  HERO  ───────────────────────── -->
-<section class="hero" aria-labelledby="hero-title">
-  <div class="container">
-    <h1 id="hero-title" class="display">
-      Help launch Nyeleti's<br><span class="word-pop">PMP</span>.
-    </h1>
-    <p class="lede">
-      180 questions stand between her and global project management
-      certification. The fee is R10,000. Friends and family are chipping in.
-    </p>
-
-    <div class="progress" aria-live="polite">
-      <p class="amounts" data-amounts><span data-raised>R0</span> raised of <span data-goal>R10,000</span></p>
-      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-bar>
-        <div class="bar-fill" data-bar-fill></div>
-      </div>
+<!-- ────────────────────  STICKY STRIP  ──────────────────── -->
+<header class="strip" role="banner">
+  <div class="strip__row">
+    <span class="strip__amounts" aria-live="polite" data-amounts>
+      <span data-raised>R0</span>
+      <span class="strip__sep">raised of</span>
+      <span data-goal>R10,000</span>
+    </span>
+    <div class="strip__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-bar>
+      <div class="strip__fill" data-bar-fill></div>
     </div>
-
-    <button type="button" id="contribute-btn" class="cta cta--lg" data-contribute>
-      Contribute
-    </button>
-    <p class="cta-micro">
-      Card or Instant EFT · Secure via PayFast · The bar reflects the net amount after PayFast's small processing fee
-    </p>
-    <p class="cta-micro">
-      Contributions are voluntary gifts toward Nyeleti's certification and are final once processed.
-    </p>
+    <button type="button" class="strip__cta" data-contribute>Contribute</button>
   </div>
-</section>
+</header>
 
-<svg class="divider divider--tangerine" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
-  <polygon points="0,6 100,0 100,6" fill="currentColor" />
-</svg>
+<main>
 
-<!-- ─────────────────────────  WHAT IS PMP  ───────────────────────── -->
-<section class="what" aria-labelledby="what-title">
-  <div class="container what__grid">
-    <div class="what__copy">
-      <h2 id="what-title">What is PMP?</h2>
-      <p>
-        PMP &mdash; Project Management Professional &mdash; is the global
-        standard certification for project leaders. Issued by PMI
-        (Project Management Institute), it's recognised across IT,
-        healthcare, finance, construction, and government in 200+ countries.
-      </p>
-      <p>
-        For someone pivoting from software engineering toward technical
-        leadership, PMP signals you can ship complex work through
-        cross-functional teams under real constraints &mdash; schedule, scope,
-        budget, people. It's the credential hiring managers look for on
-        Senior PM, Programme Manager, and Engineering Manager specs.
-      </p>
-      <p>
-        The exam itself is 180 questions in 3h50min. Behind it: 36 months
-        of project leadership experience and 35 hours of formal training.
-        It's earned, not granted.
-      </p>
-      <p class="what__more">
-        <a href="https://www.pmi.org/certifications/project-management-pmp"
-           target="_blank" rel="noopener noreferrer">Learn more on pmi.org &rarr;</a>
+  <!-- ────────────────────  1. HERO  ──────────────────── -->
+  <section class="section section--hero" data-section>
+    <div class="hero">
+      <h1 class="display hero__title">
+        Help launch<br>Nyeleti's<br><em>PMP.</em>
+      </h1>
+      <p class="hero__sub">
+        A private crowdfund toward her PMI certification.
       </p>
     </div>
+  </section>
 
-    <aside class="stats" aria-label="PMP key statistics">
-      <div class="stat">
-        <span class="stat__num">1M+</span>
-        <span class="stat__label">certified worldwide</span>
-      </div>
-      <div class="stat">
-        <span class="stat__num">200+</span>
-        <span class="stat__label">countries recognise it</span>
-      </div>
-      <div class="stat">
-        <span class="stat__num">#1</span>
-        <span class="stat__label">most globally recognised PM certification</span>
-      </div>
-    </aside>
-  </div>
-</section>
-
-<svg class="divider divider--aqua" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
-  <polygon points="0,0 100,6 0,6" fill="currentColor" />
-</svg>
-
-<!-- ─────────────────────────  THE JOURNEY  ───────────────────────── -->
-<section class="journey" aria-labelledby="journey-title">
-  <div class="container">
-    <h2 id="journey-title">The journey</h2>
-    <p class="journey__sub">Five steps to PMP. Two done, one next, two ahead.</p>
-
-    <ol class="steps">
-      <li class="step step--done" data-step>
-        <details open>
-          <summary>
-            <span class="step__circle" aria-hidden="true">1</span>
-            <span class="step__head">
-              <span class="step__badge">Done</span>
-              <span class="step__title">Eligibility</span>
-            </span>
-          </summary>
-          <p class="step__detail">36 months of project leadership + degree. Nyeleti qualifies via her current role.</p>
-        </details>
-      </li>
-
-      <li class="step step--done" data-step>
-        <details>
-          <summary>
-            <span class="step__circle" aria-hidden="true">2</span>
-            <span class="step__head">
-              <span class="step__badge">Done</span>
-              <span class="step__title">35 hours of training</span>
-            </span>
-          </summary>
-          <p class="step__detail">Formal project management education &mdash; required before sitting the exam.</p>
-        </details>
-      </li>
-
-      <li class="step step--next" data-step>
-        <details open>
-          <summary>
-            <span class="step__circle" aria-hidden="true">3</span>
-            <span class="step__head">
-              <span class="step__badge">Next</span>
-              <span class="step__title">Application</span>
-            </span>
-          </summary>
-          <p class="step__detail">PMI reviews experience and education references. Approval typically takes 5&ndash;10 business days.</p>
-        </details>
-      </li>
-
-      <li class="step step--future" data-step>
-        <details>
-          <summary>
-            <span class="step__circle" aria-hidden="true">4</span>
-            <span class="step__head">
-              <span class="step__badge">Future</span>
-              <span class="step__title">The exam</span>
-            </span>
-          </summary>
-          <p class="step__detail">180 questions, 3h50min, online or at a Pearson Vue centre in SA.</p>
-        </details>
-      </li>
-
-      <li class="step step--future" data-step>
-        <details>
-          <summary>
-            <span class="step__circle" aria-hidden="true">5</span>
-            <span class="step__head">
-              <span class="step__badge">Future</span>
-              <span class="step__title">Certified</span>
-            </span>
-          </summary>
-          <p class="step__detail">3-year cycle, renewed by earning 60 PDUs (Professional Development Units).</p>
-        </details>
-      </li>
-    </ol>
-  </div>
-</section>
-
-<svg class="divider divider--violet" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
-  <polygon points="0,6 100,0 100,6" fill="currentColor" />
-</svg>
-
-<!-- ─────────────────────────  WHERE R10,000 GOES  ───────────────────────── -->
-<section class="cost" aria-labelledby="cost-title">
-  <div class="container">
-    <h2 id="cost-title">Where R10,000 goes</h2>
-
-    <div class="cost__card">
-      <div class="cost__row">
-        <span class="cost__item">PMI Membership (annual)</span>
-        <span class="cost__amt">&sim;R2,500</span>
-      </div>
-      <div class="cost__row">
-        <span class="cost__item">PMP Exam Fee <small>(PMI member rate)</small></span>
-        <span class="cost__amt">&sim;R7,500</span>
-      </div>
-      <div class="cost__row cost__row--total">
-        <span class="cost__item">Total goal</span>
-        <span class="cost__amt">R10,000</span>
-      </div>
-    </div>
-
-    <p class="cost__note">
-      Becoming a PMI member first saves <strong>~R4,500</strong> vs paying
-      the non-member exam fee (USD 655 / ~R12,000). Smart move.
-    </p>
-  </div>
-</section>
-
-<svg class="divider divider--aqua" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
-  <polygon points="0,0 100,6 0,6" fill="currentColor" />
-</svg>
-
-<!-- ─────────────────────────  WHY THIS, WHY NOW  ───────────────────────── -->
-<section class="story" aria-labelledby="story-title">
-  <div class="container story__grid">
-    <figure class="story__photo" aria-label="Photo of Nyeleti (placeholder until supplied)">
-      <!-- When the photo is ready, save it to ./images/nyeleti.jpg (square crop,
-           ~600px) and uncomment the line below.
-      <img src="./images/nyeleti.jpg" alt="Nyeleti" loading="lazy" />
-      -->
-    </figure>
-    <div class="story__copy">
-      <h2 id="story-title">Why this, why now</h2>
-      <p class="story__line">
-        Nyeleti has been doing the work of a project manager for years
-        without the title or the credential. PMP closes that gap.
+  <!-- ────────────────────  2. THE ASK  ──────────────────── -->
+  <section class="section section--ask" data-section>
+    <div class="ask">
+      <p class="kicker">The ask</p>
+      <p class="ask__body">
+        PMP &mdash; the Project Management Professional certification &mdash;
+        is the global standard for project leaders. The path costs
+        <em class="ask__accent">R10,000</em>. Friends and family are chipping
+        in so Nyeleti can take the exam this year.
       </p>
-      <p class="story__note">[KATLEGO'S NOTE HERE]</p>
     </div>
-  </div>
-</section>
+  </section>
 
-<svg class="divider divider--tangerine" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
-  <polygon points="0,6 100,0 100,6" fill="currentColor" />
-</svg>
+  <!-- ────────────────────  3. THE COST  ──────────────────── -->
+  <section class="section section--cost" data-section>
+    <div class="cost">
+      <p class="kicker">The cost</p>
+      <h2 class="section__title"><em>R10,000, broken down.</em></h2>
 
-<!-- ─────────────────────────  READY?  (REPEAT CTA)  ───────────────────────── -->
-<section class="ready" aria-labelledby="ready-title">
-  <div class="container">
-    <h2 id="ready-title" class="display ready__title">Ready?</h2>
+      <dl class="cost-list">
+        <div class="cost-list__row">
+          <dt>
+            PMI Membership
+            <span class="cost-list__sub">annual</span>
+          </dt>
+          <dd>~R2,500</dd>
+        </div>
+        <div class="cost-list__row">
+          <dt>
+            PMP Exam Fee
+            <span class="cost-list__sub">PMI member rate</span>
+          </dt>
+          <dd>~R7,500</dd>
+        </div>
+        <div class="cost-list__row cost-list__row--total">
+          <dt>Total</dt>
+          <dd>R10,000</dd>
+        </div>
+      </dl>
 
-    <div class="progress" aria-live="polite">
-      <p class="amounts" data-amounts><span data-raised>R0</span> raised of <span data-goal>R10,000</span></p>
-      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-bar>
-        <div class="bar-fill" data-bar-fill></div>
+      <p class="cost__note">
+        Joining PMI first saves ~R4,500 vs the non-member rate.
+      </p>
+    </div>
+  </section>
+
+  <!-- ────────────────────  4. WHY THIS  ──────────────────── -->
+  <section class="section section--why" data-section>
+    <div class="why">
+      <figure class="why__photo" aria-label="Photo of Nyeleti (coming)">
+        <!-- Replace with Katlego's supplied photo. Square-ish crop, ~600px.
+             Save the file to ./images/nyeleti.jpg and uncomment the line below.
+        <img src="./images/nyeleti.jpg" alt="Nyeleti" loading="lazy" />
+        -->
+      </figure>
+
+      <div class="why__copy">
+        <p class="kicker">Why this</p>
+        <h2 class="section__title why__head">
+          <em>The work, without<br>the credential.</em>
+        </h2>
+        <p class="why__line">
+          Nyeleti has been doing the work of a project manager for years
+          without the title or the credential. PMP closes that gap.
+        </p>
+        <p class="why__note">[KATLEGO'S NOTE HERE]</p>
       </div>
     </div>
+  </section>
 
-    <button type="button" class="cta cta--lg" data-contribute>Contribute</button>
-    <p class="cta-micro">Card or Instant EFT · Secure via PayFast</p>
-  </div>
-</section>
+  <!-- ────────────────────  5. CONTRIBUTE  ──────────────────── -->
+  <section class="section section--cta" data-section>
+    <div class="cta-block">
+      <p class="kicker">Be part of it</p>
+      <h2 class="display cta-block__title"><em>Ready?</em></h2>
 
-<!-- ─────────────────────────  FOOTER  ───────────────────────── -->
+      <button type="button" class="cta-main" data-contribute>Contribute</button>
+
+      <p class="cta-meta">Card or Instant EFT &middot; Secure via PayFast</p>
+      <p class="cta-meta cta-meta--fine">
+        Contributions are voluntary gifts toward Nyeleti's certification
+        and are final once processed.
+      </p>
+    </div>
+  </section>
+
+</main>
+
 <footer>
   <small>Thank you for being here. &mdash; K</small>
 </footer>
 
-<!-- ─────────────────────────  DIALOGS / FORMS  ───────────────────────── -->
-<dialog id="amount-dialog" class="amount-dialog" aria-labelledby="amount-dialog-title">
-  <form method="dialog" id="amount-form">
-    <h2 id="amount-dialog-title">Choose an amount</h2>
+<!-- ────────────────────  DIALOG  ──────────────────── -->
+<dialog id="amount-dialog" class="dialog" aria-labelledby="dialog-title">
+  <form method="dialog" class="dialog__inner" id="amount-form">
+    <p class="kicker dialog__kicker">Contribute</p>
+    <h2 id="dialog-title" class="dialog__title"><em>Choose an amount.</em></h2>
+
     <div class="chips" role="group" aria-label="Suggested amounts">
       <button type="button" class="chip" data-amount="100">R100</button>
       <button type="button" class="chip" data-amount="200">R200</button>
       <button type="button" class="chip" data-amount="500">R500</button>
       <button type="button" class="chip" data-amount="1000">R1 000</button>
     </div>
+
     <label class="other">
-      <span>Or enter another amount (R)</span>
+      <span class="other__label">Or another amount (R)</span>
       <input type="number" id="custom-amount" min="10" max="100000" step="1" inputmode="decimal" placeholder="e.g. 350" autocomplete="off">
     </label>
-    <p class="dialog-fineprint">
-      <em>PayFast deducts a small processing fee (~3%) so the bar reflects what actually reaches Nyeleti.</em>
+
+    <p class="dialog__fine">
+      PayFast deducts a small processing fee (~3%) so the bar reflects what
+      actually reaches Nyeleti.
     </p>
-    <p class="dialog-fineprint">
-      <em>Contributions are voluntary gifts toward Nyeleti's certification and are final once processed.</em>
+    <p class="dialog__fine">
+      Contributions are voluntary gifts toward Nyeleti's certification and
+      are final once processed.
     </p>
-    <div class="dialog-actions">
-      <button type="button" class="cancel" id="amount-cancel">Cancel</button>
-      <button type="submit" class="confirm" id="amount-confirm">Continue to payment</button>
+
+    <div class="dialog__actions">
+      <button type="button" class="dialog__cancel" id="amount-cancel">Cancel</button>
+      <button type="submit" class="dialog__confirm" id="amount-confirm">Continue to payment</button>
     </div>
   </form>
 </dialog>
