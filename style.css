@@ -267,12 +267,12 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 /* Ghosted "R10,000" — atmosphere, not headline. Behind real content. */
 .hero__ghost {
   position: absolute;
-  top: 4%;
-  right: -6%;
+  top: 8%;
+  right: -3%;
   font-family: var(--serif);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(220px, 32vw, 440px);
+  font-size: clamp(96px, 12vw, 160px);
   line-height: 0.9;
   letter-spacing: -0.03em;
   color: var(--ink);
