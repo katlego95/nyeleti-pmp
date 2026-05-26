@@ -16,15 +16,47 @@ const STRIP_H  = 56;   // must match --strip-h in style.css
 const $  = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
+const prefersReducedMotion = () =>
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 const formatRand = (n) =>
   'R' + Math.round(n).toLocaleString('en-ZA', { maximumFractionDigits: 0 });
+
+// Track currently-displayed raised value so re-renders animate from previous
+// instead of always counting from R0.
+let currentRaisedN = 0;
+
+function animateRaisedTo(targetN, duration = 600) {
+  const els = $$('[data-raised]');
+  if (!els.length) return;
+  if (prefersReducedMotion()) {
+    els.forEach((el) => { el.textContent = formatRand(targetN); });
+    currentRaisedN = targetN;
+    return;
+  }
+  const startN = currentRaisedN;
+  if (startN === targetN) {
+    els.forEach((el) => { el.textContent = formatRand(targetN); });
+    return;
+  }
+  const start = performance.now();
+  function tick(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);          // cubic ease-out
+    const value = startN + (targetN - startN) * eased;
+    els.forEach((el) => { el.textContent = formatRand(value); });
+    if (t < 1) requestAnimationFrame(tick);
+    else currentRaisedN = targetN;
+  }
+  requestAnimationFrame(tick);
+}
 
 function renderProgress({ total_zar, goal_zar, percent }) {
   $$('[data-amounts]').forEach((el) => el.classList.remove('amounts--failed'));
   $$('[data-bar-fill]').forEach((el) => { el.style.width = percent + '%'; });
   $$('[data-bar]').forEach((el)      => { el.setAttribute('aria-valuenow', String(percent)); });
-  $$('[data-raised]').forEach((el)   => { el.textContent = formatRand(total_zar); });
   $$('[data-goal]').forEach((el)     => { el.textContent = formatRand(goal_zar);  });
+  animateRaisedTo(total_zar);
   if (percent >= 100) {
     document.body.classList.add('goal-reached');
     $$('[data-contribute]').forEach((btn) => { btn.textContent = 'Thank you'; });
@@ -32,8 +64,6 @@ function renderProgress({ total_zar, goal_zar, percent }) {
 }
 
 function renderFailureState() {
-  // Add a class — CSS hides the inner spans and shows "Updating shortly" via ::before.
-  // Children stay in DOM so a subsequent successful fetch can restore them.
   $$('[data-amounts]').forEach((el) => el.classList.add('amounts--failed'));
 }
 
@@ -141,14 +171,12 @@ function handleReturnQuery() {
 }
 
 // Hero-bar → sticky-strip transition. The signature motion.
-// When the hero bar is in view (visible below the strip's would-be zone), the
-// sticky strip is hidden. When it scrolls out, the strip fades/slides in.
 function wireStripToggle() {
   const heroBar = $('[data-hero-bar]');
   const strip = $('.strip');
   if (!heroBar || !strip) return;
   if (!('IntersectionObserver' in window)) {
-    strip.classList.add('strip--visible');   // no IO: strip stays visible
+    strip.classList.add('strip--visible');
     return;
   }
   const io = new IntersectionObserver(([entry]) => {
@@ -164,11 +192,12 @@ function wireStripToggle() {
   io.observe(heroBar);
 }
 
+// Reveal observer: handles [data-reveal] (single element) and
+// [data-reveal-stagger] (parent triggers staggered children).
 function observeReveal() {
-  const els = $$('[data-reveal]');
+  const els = $$('[data-reveal], [data-reveal-stagger]');
   if (!els.length) return;
-  if (!('IntersectionObserver' in window) ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (!('IntersectionObserver' in window) || prefersReducedMotion()) {
     els.forEach((el) => el.classList.add('in-view'));
     return;
   }
@@ -183,12 +212,44 @@ function observeReveal() {
   els.forEach((el) => io.observe(el));
 }
 
+// Section-rule observer: draws in the hairline above each section
+// (the ::before pseudo on [data-reveal-rule] elements).
+function observeSectionRules() {
+  const els = $$('[data-reveal-rule]');
+  if (!els.length) return;
+  if (!('IntersectionObserver' in window) || prefersReducedMotion()) {
+    els.forEach((el) => el.classList.add('section--seen'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('section--seen');
+        io.unobserve(entry.target);
+      }
+    }
+  }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
+  els.forEach((el) => io.observe(el));
+}
+
+// Hero arrival sequence — adds .is-loaded to <body>, CSS handles the rest.
+// requestAnimationFrame defer ensures the initial opacity:0 state has painted
+// before the transition kicks off, so the sequence is reliable.
+function triggerLoadSequence() {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.body.classList.add('is-loaded');
+    });
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Seed the goal text so the page shows "R0 raised of R10,000" before /summary returns.
   $$('[data-goal]').forEach((el) => { el.textContent = formatRand(GOAL_ZAR); });
   wireDialog();
   handleReturnQuery();
   wireStripToggle();
   observeReveal();
+  observeSectionRules();
+  triggerLoadSequence();
   fetchSummary();
 });

@@ -36,34 +36,41 @@
   <!-- ────────────────────  1. HERO  ──────────────────── -->
   <section class="section section--hero">
     <div class="hero">
-      <div class="hero__head" data-reveal>
+      <div class="hero__head">
         <h1 class="display hero__title">
-          Help launch<br>Nyeleti's<br><em>PMP.</em>
+          <span class="hero__line staged" style="--stage:0">Help launch</span>
+          <span class="hero__line staged" style="--stage:1">Nyeleti's</span>
+          <span class="hero__line staged" style="--stage:2"><em>PMP.</em></span>
         </h1>
-        <p class="hero__sub">
+        <p class="hero__sub staged" style="--stage:3">
           A private crowdfund toward her PMI certification.
+        </p>
+        <p class="hero__meta staged" style="--stage:4">
+          Private fundraiser &middot; 2026
         </p>
       </div>
 
-      <div class="hero__bar" data-hero-bar data-reveal>
-        <div class="hero__amount" data-amounts aria-live="polite">
-          <span class="hero__raised">
-            <span data-raised>R0</span>
-          </span>
-          <span class="hero__raised-label">
-            raised of <span data-goal>R10,000</span>
-          </span>
+      <div class="hero__bar-group">
+        <div class="hero__bar staged" data-hero-bar style="--stage:5">
+          <div class="hero__amount" data-amounts aria-live="polite">
+            <span class="hero__raised">
+              <span data-raised>R0</span>
+            </span>
+            <span class="hero__raised-label">
+              raised of <span data-goal>R10,000</span>
+            </span>
+          </div>
+          <div class="hero__track" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-bar>
+            <div class="hero__fill" data-bar-fill></div>
+          </div>
         </div>
-        <div class="hero__track" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-bar>
-          <div class="hero__fill" data-bar-fill></div>
-        </div>
-        <button type="button" class="cta-main hero__cta" data-contribute>Contribute</button>
+        <button type="button" class="cta-main hero__cta staged" data-contribute style="--stage:6">Contribute</button>
       </div>
     </div>
   </section>
 
   <!-- ────────────────────  2. THE ASK  ──────────────────── -->
-  <section class="section section--ask">
+  <section class="section section--ask" data-reveal-rule>
     <div class="ask" data-reveal>
       <p class="kicker"><span class="kicker__num">01</span>The ask</p>
       <p class="ask__body">
@@ -76,7 +83,7 @@
   </section>
 
   <!-- ────────────────────  3. THE COST  ──────────────────── -->
-  <section class="section section--cost">
+  <section class="section section--cost" data-reveal-rule>
     <div class="cost">
       <div class="cost__head" data-reveal>
         <p class="kicker"><span class="kicker__num">02</span>The cost</p>
@@ -87,28 +94,28 @@
         </p>
       </div>
 
-      <div class="cost__body" data-reveal>
-        <dl class="cost-list">
-          <div class="cost-list__row">
+      <div class="cost__body">
+        <dl class="cost-list" data-reveal-stagger>
+          <div class="cost-list__row" style="--stage:0">
             <dt>
               PMI Membership
               <span class="cost-list__sub">annual</span>
             </dt>
             <dd>~R2,500</dd>
           </div>
-          <div class="cost-list__row">
+          <div class="cost-list__row" style="--stage:1">
             <dt>
               PMP Exam Fee
               <span class="cost-list__sub">PMI member rate</span>
             </dt>
             <dd>~R7,500</dd>
           </div>
-          <div class="cost-list__row cost-list__row--total">
+          <div class="cost-list__row cost-list__row--total" style="--stage:2">
             <dt>Total</dt>
             <dd>R10,000</dd>
           </div>
         </dl>
-        <p class="cost__note">
+        <p class="cost__note" data-reveal>
           Joining PMI first saves ~R4,500 vs the non-member rate.
         </p>
       </div>
@@ -116,7 +123,7 @@
   </section>
 
   <!-- ────────────────────  4. WHY THIS  ──────────────────── -->
-  <section class="section section--why">
+  <section class="section section--why" data-reveal-rule>
     <div class="why">
       <figure class="why__photo" data-reveal="photo">
         <!-- Portrait of Nyeleti, supplied by Katlego. 2008x3008 (~2:3). -->
@@ -139,7 +146,7 @@
   </section>
 
   <!-- ────────────────────  5. CONTRIBUTE  ──────────────────── -->
-  <section class="section section--cta">
+  <section class="section section--cta" data-reveal-rule>
     <div class="cta-block" data-reveal>
       <p class="kicker"><span class="kicker__num">04</span>Be part of it</p>
       <h2 class="display cta-block__title"><em>Ready?</em></h2>
