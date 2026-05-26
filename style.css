@@ -19,18 +19,19 @@
   --strip-h:   56px;
   --container: 1180px;
   --gutter:    clamp(22px, 4vw, 40px);
-  --space-section: clamp(40px, 7vw, 88px);   /* tightened ~25% from v3.1 */
+  --space-section: clamp(40px, 7vw, 88px);
 
   --serif: 'Instrument Serif', 'Times New Roman', Georgia, serif;
   --sans:  'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
-  --ease:    cubic-bezier(0.16, 1, 0.3, 1);
-  --t-reveal: 420ms;
-  --t-stage:  480ms;
-  --t-strip:  280ms;
-  --t-bar:    900ms;
-  --t-rule:   500ms;
-  --stage-step: 80ms;
+  --ease:        cubic-bezier(0.16, 1, 0.3, 1);
+  --t-reveal:    420ms;
+  --t-stage:     480ms;
+  --t-strip:     280ms;
+  --t-bar:       900ms;
+  --t-rule:      500ms;
+  --t-ghost:     800ms;
+  --stage-step:  70ms;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -68,7 +69,7 @@ a {
 a:hover, a:focus-visible { color: var(--violet); outline: none; }
 
 /* ─────────────────────────────────────────────────────────────────
-   Sticky strip — opaque off-white, high z-index. No bleed-through.
+   Sticky strip — opaque off-white, high z-index.
    ───────────────────────────────────────────────────────────────── */
 .strip {
   position: fixed;
@@ -82,7 +83,6 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   transition: opacity var(--t-strip) var(--ease),
               transform var(--t-strip) var(--ease);
 }
-/* JS available → strip starts hidden, only shown after hero bar scrolls out. */
 .js .strip {
   opacity: 0;
   transform: translateY(-100%);
@@ -155,8 +155,6 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 }
 .strip__cta:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(10, 10, 10, 0.04); }
 
-.toast { z-index: 200; }   /* keep toast above the strip */
-
 @media (max-width: 480px) {
   .strip__row { gap: 12px; padding: 0 16px; }
   .strip__amounts { font-size: 12px; }
@@ -192,7 +190,24 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 .section > *  { max-width: var(--container); margin-left: auto; margin-right: auto; }
 
 /* ─────────────────────────────────────────────────────────────────
-   Kicker labels with section number
+   Unified editorial grid — used by every section below the hero.
+   Narrow left (kicker spine), wide right (content). Stacks on mobile.
+   ───────────────────────────────────────────────────────────────── */
+.section-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+@media (min-width: 760px) {
+  .section-grid {
+    grid-template-columns: 5fr 7fr;
+    gap: 56px;
+    align-items: start;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Kicker labels with section number, supporting line
    ───────────────────────────────────────────────────────────────── */
 .kicker {
   font-family: var(--sans);
@@ -201,7 +216,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ink-3);
-  margin: 0 0 24px;
+  margin: 0 0 16px;
   display: inline-flex;
   align-items: baseline;
   gap: 16px;
@@ -209,6 +224,15 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 .kicker__num {
   color: var(--ink);
   font-variant-numeric: tabular-nums;
+}
+
+.meta-supporting {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-3);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 28ch;
 }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -220,30 +244,61 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   font-size: clamp(30px, 4.4vw, 48px);
   line-height: 1.08;
   letter-spacing: -0.012em;
-  margin: 0 0 24px;
+  margin: 0 0 22px;
   color: var(--ink);
 }
 .section__title em { font-style: italic; }
 
 /* ─────────────────────────────────────────────────────────────────
-   1. Hero — staged page-load arrival sequence.
+   1. Hero — staged arrival, ghosted figure, full-width bar band.
    ───────────────────────────────────────────────────────────────── */
 .section--hero {
   padding-top: clamp(28px, 5vw, 72px);
   padding-bottom: clamp(40px, 7vw, 96px);
 }
 .hero {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: clamp(24px, 3.5vw, 40px);
+  gap: clamp(28px, 4vw, 48px);
+  isolation: isolate;
 }
+
+/* Ghosted "R10,000" — atmosphere, not headline. Behind real content. */
+.hero__ghost {
+  position: absolute;
+  top: 4%;
+  right: -6%;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(220px, 32vw, 440px);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  opacity: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  transition: opacity var(--t-ghost) var(--ease);
+  transition-delay: 280ms;
+}
+.is-loaded .hero__ghost { opacity: 0.07; }
+
+@media (max-width: 880px) {
+  .hero__ghost { display: none; }
+}
+
+/* Real hero content above the ghost */
+.hero__head, .hero__bar-group { position: relative; z-index: 1; }
 
 .display {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(50px, 11vw, 128px);
+  font-size: clamp(46px, 10.5vw, 124px);
   line-height: 0.96;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.022em;
   margin: 0;
   color: var(--ink);
 }
@@ -255,6 +310,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   flex-direction: column;
   gap: 0;
   margin: 0;
+  max-width: 12ch;
 }
 .hero__line { display: block; }
 
@@ -278,25 +334,26 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   margin: 4px 0 0;
 }
 
-/* Hero progress bar */
+/* Hero progress band — full content width, deliberate composition. */
 .hero__bar-group {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
   align-items: flex-start;
-}
-.hero__bar {
-  max-width: 620px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
 }
+.hero__bar { width: 100%; display: flex; flex-direction: column; gap: 14px; }
 .hero__amount {
   display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.hero__amount-left {
+  display: inline-flex;
   align-items: baseline;
   gap: 14px;
-  flex-wrap: wrap;
 }
 .hero__raised {
   font-family: var(--serif);
@@ -308,14 +365,21 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
-.hero__raised-label {
+.hero__raised-suffix {
   font-family: var(--sans);
   font-size: clamp(13px, 1.2vw, 15px);
   font-weight: 500;
   letter-spacing: 0.005em;
   color: var(--ink-3);
 }
-.hero__raised-label [data-goal] { color: var(--ink-2); font-weight: 600; }
+.hero__goal-label {
+  font-family: var(--sans);
+  font-size: clamp(13px, 1.2vw, 15px);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  color: var(--ink-3);
+}
+.hero__goal-label [data-goal] { color: var(--ink-2); font-weight: 600; }
 
 .hero__track {
   width: 100%;
@@ -334,7 +398,6 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 
 /* ─────────────────────────────────────────────────────────────────
    Staged page-load animation (hero arrival).
-   Triggered by body.is-loaded which JS adds on DOMContentLoaded.
    ───────────────────────────────────────────────────────────────── */
 .staged {
   opacity: 0;
@@ -349,22 +412,12 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   2. The ask — kicker on left (narrow), pull-quote right (wide).
+   2. The ask — kicker left, pull-quote right (now on unified grid).
    ───────────────────────────────────────────────────────────────── */
-.ask {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-@media (min-width: 760px) {
-  .ask {
-    grid-template-columns: 1fr 8fr;
-    gap: 48px;
-    align-items: start;
-  }
-  .ask .kicker { margin-top: 8px; margin-bottom: 0; }
-}
-.ask__body {
+.ask__head { display: flex; flex-direction: column; gap: 12px; }
+.ask__head .kicker { margin-bottom: 0; }
+
+.ask__body-text {
   font-family: var(--serif);
   font-weight: 400;
   font-size: clamp(26px, 4vw, 40px);
@@ -381,32 +434,12 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   3. The cost — left meta column, right breakdown (staggered rows).
+   3. The cost — left meta, right breakdown (staggered rows).
    ───────────────────────────────────────────────────────────────── */
-.cost {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-}
-@media (min-width: 760px) {
-  .cost {
-    grid-template-columns: 5fr 7fr;
-    gap: 56px;
-    align-items: start;
-  }
-}
-
 .cost__head { display: flex; flex-direction: column; gap: 8px; }
 .cost__head .kicker { margin-bottom: 8px; }
-.cost__head .section__title { margin-bottom: 12px; }
-.cost__supporting {
-  font-family: var(--sans);
-  font-size: 14px;
-  color: var(--ink-3);
-  line-height: 1.55;
-  margin: 0;
-  max-width: 32ch;
-}
+.cost__head .section__title { margin-bottom: 10px; }
+.cost__head .meta-supporting { max-width: 32ch; }
 
 .cost-list {
   margin: 0 0 20px;
@@ -458,17 +491,20 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   4. Why this — tall portrait photo + text.
+   4. Why this — kicker left, nested sub-grid right (photo + copy).
    ───────────────────────────────────────────────────────────────── */
-.why {
+.why__head { display: flex; flex-direction: column; gap: 8px; }
+.why__head .kicker { margin-bottom: 0; }
+
+.why__body {
   display: grid;
   grid-template-columns: 1fr;
   gap: 32px;
 }
 @media (min-width: 760px) {
-  .why {
-    grid-template-columns: 5fr 7fr;
-    gap: 64px;
+  .why__body {
+    grid-template-columns: minmax(0, 360px) 1fr;
+    gap: 44px;
     align-items: start;
   }
 }
@@ -476,7 +512,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 .why__photo {
   position: relative;
   width: 100%;
-  max-width: 460px;
+  max-width: 100%;
   aspect-ratio: 2 / 3;
   margin: 0;
   background: var(--paper);
@@ -525,8 +561,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 .why__photo:not(:has(img)) .why__caption { display: none; }
 
 .why__copy { display: flex; flex-direction: column; gap: 0; }
-.why__copy .kicker { margin-bottom: 18px; }
-.why__head { margin-bottom: 18px; }
+.why__title { margin-bottom: 18px; }
 
 .why__line {
   font-family: var(--sans);
@@ -550,19 +585,16 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   5. Contribute — final CTA.
+   5. Be part of it — kicker left, headline + CTA right.
    ───────────────────────────────────────────────────────────────── */
-.section--cta {
-  padding-bottom: clamp(48px, 7vw, 88px);
-}
-.cta-block {
-  text-align: left;
-  max-width: 640px;
-}
-.cta-block .kicker { margin-bottom: 20px; }
+.section--cta { padding-bottom: clamp(48px, 7vw, 88px); }
+.cta__head { display: flex; flex-direction: column; gap: 8px; }
+.cta__head .kicker { margin-bottom: 0; }
+
+.cta-block { text-align: left; max-width: 640px; }
 .cta-block__title {
-  font-size: clamp(60px, 13vw, 144px);
-  margin-bottom: 28px;
+  font-size: clamp(60px, 12vw, 132px);
+  margin: 0 0 28px;
 }
 
 .cta-main {
@@ -615,7 +647,7 @@ footer {
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   Amount-picker dialog — restrained, off-white, thin border.
+   Amount-picker dialog
    ───────────────────────────────────────────────────────────────── */
 .dialog {
   border: 1px solid var(--line);
@@ -757,7 +789,7 @@ footer {
 .toast.toast--soft { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
 
 /* ─────────────────────────────────────────────────────────────────
-   Scroll reveals — one easing, one duration family.
+   Scroll reveals
    ───────────────────────────────────────────────────────────────── */
 [data-reveal] {
   opacity: 0;
@@ -769,7 +801,6 @@ footer {
   opacity: 1;
   transform: translateY(0);
 }
-/* Photo reveal: scale-down feel instead of translate */
 [data-reveal="photo"] {
   opacity: 0;
   transform: scale(1.03);
@@ -781,7 +812,6 @@ footer {
   transform: scale(1);
 }
 
-/* Staggered groups — children stagger in when parent enters view. */
 [data-reveal-stagger] > * {
   opacity: 0;
   transform: translateY(12px);
@@ -811,7 +841,7 @@ footer {
 .hero__amount.amounts--failed::before { font-size: clamp(16px, 1.6vw, 19px); }
 
 /* ─────────────────────────────────────────────────────────────────
-   Goal-reached — restrained shift, no celebration FX.
+   Goal-reached — restrained shift.
    ───────────────────────────────────────────────────────────────── */
 body.goal-reached .strip__cta,
 body.goal-reached .cta-main {
@@ -826,7 +856,7 @@ body.goal-reached .strip__amounts [data-raised] {
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   Reduced motion — disable all transitions/animations.
+   Reduced motion
    ───────────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -834,7 +864,7 @@ body.goal-reached .strip__amounts [data-raised] {
   .strip__cta, .cta-main, .chip, .toast,
   .staged, [data-reveal], [data-reveal="photo"],
   [data-reveal-stagger] > *,
-  [data-reveal-rule]::before {
+  [data-reveal-rule]::before, .hero__ghost {
     transition: none !important;
     animation: none !important;
   }
@@ -846,4 +876,5 @@ body.goal-reached .strip__amounts [data-raised] {
   [data-reveal-rule]::before {
     transform: translateX(-50%) scaleX(1);
   }
+  .hero__ghost { opacity: 0.07; }
 }
