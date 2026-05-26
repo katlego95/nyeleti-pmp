@@ -288,8 +288,8 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 
 @media (max-width: 880px) {
   .hero__ghost {
-    font-size: clamp(120px, 34vw, 240px);
-    right: max(-100px, -22%);
+    font-size: clamp(80px, 22vw, 150px);
+    right: 0;
   }
   .is-loaded .hero__ghost { opacity: 0.06; }
 }
