@@ -290,6 +290,27 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   .hero__ghost { display: none; }
 }
 
+/* Mobile-only editorial detail — thin vertical hairline anchoring the hero
+   to its left edge. Hidden on desktop. Quiet fade-in with the load sequence. */
+.hero__rail { display: none; }
+
+@media (max-width: 879px) {
+  .hero__rail {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -12px;
+    width: 1px;
+    background: var(--line);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--t-ghost) var(--ease);
+    transition-delay: 360ms;
+  }
+  .is-loaded .hero__rail { opacity: 1; }
+}
+
 /* Real hero content above the ghost */
 .hero__head, .hero__bar-group { position: relative; z-index: 1; }
 
@@ -864,7 +885,7 @@ body.goal-reached .strip__amounts [data-raised] {
   .strip__cta, .cta-main, .chip, .toast,
   .staged, [data-reveal], [data-reveal="photo"],
   [data-reveal-stagger] > *,
-  [data-reveal-rule]::before, .hero__ghost {
+  [data-reveal-rule]::before, .hero__ghost, .hero__rail {
     transition: none !important;
     animation: none !important;
   }
@@ -877,4 +898,5 @@ body.goal-reached .strip__amounts [data-raised] {
     transform: translateX(-50%) scaleX(1);
   }
   .hero__ghost { opacity: 0.07; }
+  .hero__rail { opacity: 1; }
 }
