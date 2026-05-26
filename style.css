@@ -1,5 +1,6 @@
 /* ─────────────────────────────────────────────────────────────────
    Tokens — editorial mono with one violet accent.
+   One easing curve everywhere: cubic-bezier(0.16, 1, 0.3, 1) ease-out.
    ───────────────────────────────────────────────────────────────── */
 :root {
   --bg:        #FAF7F2;
@@ -14,15 +15,19 @@
 
   --violet:    #6B2C91;
   --violet-2:  #5A247A;
-  --violet-soft: rgba(107, 44, 145, 0.08);
 
   --strip-h:   56px;
   --container: 1180px;
   --gutter:    clamp(22px, 4vw, 40px);
-  --space-section: clamp(80px, 13vw, 168px);
+  --space-section: clamp(56px, 9vw, 120px);
 
   --serif: 'Instrument Serif', 'Times New Roman', Georgia, serif;
   --sans:  'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --ease:  cubic-bezier(0.16, 1, 0.3, 1);
+  --t-reveal: 420ms;
+  --t-strip:  280ms;
+  --t-bar:    900ms;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -55,12 +60,13 @@ a {
   text-decoration-color: var(--violet);
   text-decoration-thickness: 1.5px;
   text-underline-offset: 4px;
-  transition: color 200ms ease;
+  transition: color 200ms var(--ease);
 }
 a:hover, a:focus-visible { color: var(--violet); outline: none; }
 
 /* ─────────────────────────────────────────────────────────────────
-   Sticky strip — thin, refined, present at every scroll position.
+   Sticky strip — appears as the hero bar scrolls out of view.
+   Default: hidden when JS available; visible as no-JS fallback.
    ───────────────────────────────────────────────────────────────── */
 .strip {
   position: fixed;
@@ -73,7 +79,21 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
           backdrop-filter: saturate(140%) blur(14px);
   border-bottom: 1px solid var(--line-soft);
   z-index: 50;
+  transition: opacity var(--t-strip) var(--ease),
+              transform var(--t-strip) var(--ease);
 }
+/* JS available → strip starts hidden, only shown after hero bar scrolls out. */
+.js .strip {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+.js .strip.strip--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
 .strip__row {
   height: 100%;
   max-width: var(--container);
@@ -107,7 +127,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   width: 0%;
   background: var(--violet);
   border-radius: 999px;
-  transition: width 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width var(--t-bar) var(--ease);
 }
 .strip__cta {
   flex: 0 0 auto;
@@ -121,7 +141,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   padding: 10px 18px;
   border-radius: 999px;
   cursor: pointer;
-  transition: background 200ms ease, transform 100ms ease;
+  transition: background 200ms var(--ease), transform 100ms var(--ease);
   min-height: 36px;
 }
 .strip__cta:hover, .strip__cta:focus-visible {
@@ -140,25 +160,29 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   Sections — modular, thin-rule separations or pure whitespace.
+   Sections — content-width hairline rules between, tightened rhythm.
    ───────────────────────────────────────────────────────────────── */
 .section {
+  position: relative;
   padding: var(--space-section) var(--gutter);
 }
-.section--ask,
-.section--cost,
-.section--why,
-.section--cta {
-  border-top: 1px solid var(--line-soft);
+.section + .section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2 * var(--gutter));
+  max-width: var(--container);
+  height: 1px;
+  background: var(--line);
 }
 
 .section > *  { max-width: var(--container); margin-left: auto; margin-right: auto; }
-.section > .hero,
-.section > .ask,
-.section > .cost,
-.section > .why,
-.section > .cta-block { width: 100%; }
 
+/* ─────────────────────────────────────────────────────────────────
+   Kicker labels with section number
+   ───────────────────────────────────────────────────────────────── */
 .kicker {
   font-family: var(--sans);
   font-size: 11px;
@@ -166,85 +190,153 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ink-3);
-  margin: 0 0 28px;
+  margin: 0 0 24px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 16px;
+}
+.kicker__num {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   Section titles
+   ───────────────────────────────────────────────────────────────── */
 .section__title {
   font-family: var(--serif);
   font-weight: 400;
   font-size: clamp(30px, 4.4vw, 48px);
   line-height: 1.08;
   letter-spacing: -0.012em;
-  margin: 0 0 28px;
+  margin: 0 0 24px;
   color: var(--ink);
 }
 .section__title em { font-style: italic; }
 
 /* ─────────────────────────────────────────────────────────────────
-   1. Hero — oversized editorial, asymmetric, lots of room.
+   1. Hero — title + sub + prominent progress bar block.
    ───────────────────────────────────────────────────────────────── */
 .section--hero {
-  padding-top: clamp(48px, 12vw, 128px);
-  padding-bottom: clamp(80px, 14vw, 180px);
+  padding-top: clamp(36px, 7vw, 88px);
+  padding-bottom: clamp(56px, 9vw, 120px);
 }
 .hero {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 36px;
-}
-@media (min-width: 760px) {
-  .hero { grid-template-columns: 1fr 1fr; align-items: end; gap: 56px; }
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 4vw, 48px);
 }
 
 .display {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(54px, 13vw, 152px);
-  line-height: 0.94;
-  letter-spacing: -0.025em;
+  font-size: clamp(50px, 11vw, 128px);
+  line-height: 0.96;
+  letter-spacing: -0.02em;
   margin: 0;
   color: var(--ink);
 }
 .display em { font-style: italic; }
 
+.hero__head { display: flex; flex-direction: column; gap: 22px; }
 .hero__title { margin: 0; }
-
 .hero__sub {
   font-family: var(--sans);
-  font-size: clamp(17px, 1.8vw, 21px);
+  font-size: clamp(16px, 1.6vw, 19px);
   font-weight: 400;
   color: var(--ink-2);
-  line-height: 1.4;
-  max-width: 32ch;
+  line-height: 1.45;
+  max-width: 34ch;
   margin: 0;
-  padding-bottom: 8px;
 }
 
+/* Hero progress bar — the focal element */
+.hero__bar {
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.hero__amount {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.hero__raised {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(44px, 7.5vw, 76px);
+  line-height: 0.95;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.hero__raised-label {
+  font-family: var(--sans);
+  font-size: clamp(13px, 1.2vw, 15px);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  color: var(--ink-3);
+}
+.hero__raised-label [data-goal] { color: var(--ink-2); font-weight: 600; }
+
+.hero__track {
+  width: 100%;
+  height: 8px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.hero__fill {
+  height: 100%;
+  width: 0%;
+  background: var(--violet);
+  border-radius: 999px;
+  transition: width var(--t-bar) var(--ease);
+}
+.hero__cta { align-self: flex-start; margin-top: 4px; }
+
+/* Failure state — children are hidden; "Updating shortly" rendered via ::before.
+   Children stay in DOM so a later successful fetch can restore them in place. */
+[data-amounts].amounts--failed > * { display: none; }
+[data-amounts].amounts--failed::before {
+  content: "Updating shortly";
+  font-family: var(--sans);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--ink-3);
+  letter-spacing: 0;
+}
+.hero__amount.amounts--failed { display: block; }
+.hero__amount.amounts--failed::before { font-size: clamp(16px, 1.6vw, 19px); }
+
 /* ─────────────────────────────────────────────────────────────────
-   2. The ask — pull-quote treatment.
+   2. The ask — kicker on left (narrow), pull-quote right (wide).
    ───────────────────────────────────────────────────────────────── */
 .ask {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0;
+  gap: 16px;
 }
 @media (min-width: 760px) {
   .ask {
     grid-template-columns: 1fr 8fr;
-    gap: 36px;
+    gap: 48px;
     align-items: start;
   }
-  .ask .kicker { margin-top: 12px; margin-bottom: 0; }
+  .ask .kicker { margin-top: 8px; margin-bottom: 0; }
 }
-
 .ask__body {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(28px, 4.4vw, 44px);
-  line-height: 1.2;
+  font-size: clamp(26px, 4vw, 40px);
+  line-height: 1.22;
   letter-spacing: -0.008em;
   margin: 0;
-  max-width: 22ch;
+  max-width: 24ch;
   color: var(--ink);
 }
 .ask__accent {
@@ -254,7 +346,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   3. The cost — restrained typographic list, thin rules.
+   3. The cost — left meta column, right breakdown.
    ───────────────────────────────────────────────────────────────── */
 .cost {
   display: grid;
@@ -263,25 +355,33 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 }
 @media (min-width: 760px) {
   .cost {
-    grid-template-columns: 4fr 8fr;
+    grid-template-columns: 5fr 7fr;
     gap: 56px;
     align-items: start;
   }
-  .cost > .kicker { margin-top: 12px; margin-bottom: 0; }
-  .cost > .section__title { grid-column: 2; margin-bottom: 32px; }
-  .cost > .cost-list { grid-column: 2; }
-  .cost > .cost__note { grid-column: 2; }
+}
+
+.cost__head { display: flex; flex-direction: column; gap: 8px; }
+.cost__head .kicker { margin-bottom: 8px; }
+.cost__head .section__title { margin-bottom: 12px; }
+.cost__supporting {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-3);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 32ch;
 }
 
 .cost-list {
-  margin: 0 0 24px;
+  margin: 0 0 20px;
   border-top: 1px solid var(--line);
 }
 .cost-list__row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  padding: 20px 0;
+  padding: 18px 0;
   border-bottom: 1px solid var(--line);
   gap: 24px;
 }
@@ -323,7 +423,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   4. Why this — asymmetric: photo + text, aligned at bottom on desktop.
+   4. Why this — tall portrait photo + text.
    ───────────────────────────────────────────────────────────────── */
 .why {
   display: grid;
@@ -334,20 +434,36 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   .why {
     grid-template-columns: 5fr 7fr;
     gap: 64px;
-    align-items: end;
+    align-items: start;
   }
 }
 
 .why__photo {
   position: relative;
   width: 100%;
-  max-width: 420px;
-  aspect-ratio: 1 / 1;
+  max-width: 460px;
+  aspect-ratio: 2 / 3;
   margin: 0;
   background: var(--paper);
   border: 1px solid var(--line);
+  border-radius: 2px;
   overflow: hidden;
+  box-shadow: 0 8px 32px rgba(10, 10, 10, 0.06);
 }
+/* When an <img> is present (loaded), drop the placeholder treatments. */
+.why__photo:has(img) {
+  border-color: transparent;
+  background: transparent;
+}
+.why__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+  border-radius: 2px;
+}
+/* "Photo coming" fallback label, hidden once img is in DOM */
 .why__photo::after {
   content: "Photo coming";
   position: absolute;
@@ -359,29 +475,40 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   color: var(--ink-4);
   pointer-events: none;
 }
-.why__photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: relative;
-  z-index: 1;
-}
+.why__photo:has(img)::after { display: none; }
 
-.why__head { margin-bottom: 20px; }
+.why__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -28px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+/* Hide caption until image actually loads (so the fallback block doesn't get one) */
+.why__photo:not(:has(img)) .why__caption { display: none; }
+
+.why__copy { display: flex; flex-direction: column; gap: 0; }
+.why__copy .kicker { margin-bottom: 18px; }
+.why__head { margin-bottom: 18px; }
 
 .why__line {
   font-family: var(--sans);
-  font-size: clamp(17px, 1.8vw, 19px);
+  font-size: clamp(17px, 1.7vw, 19px);
   line-height: 1.55;
   color: var(--ink);
-  margin: 0 0 20px;
-  max-width: 32ch;
+  margin: 0 0 18px;
+  max-width: 34ch;
 }
 
 .why__note {
   font-family: var(--serif);
   font-style: italic;
-  font-size: clamp(17px, 1.6vw, 19px);
+  font-size: clamp(17px, 1.5vw, 19px);
   line-height: 1.5;
   color: var(--ink-2);
   margin: 0;
@@ -391,18 +518,19 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   5. Contribute — final CTA, generous space.
+   5. Contribute — final CTA.
    ───────────────────────────────────────────────────────────────── */
 .section--cta {
-  padding-bottom: clamp(80px, 12vw, 144px);
+  padding-bottom: clamp(64px, 9vw, 112px);
 }
 .cta-block {
   text-align: left;
   max-width: 640px;
 }
+.cta-block .kicker { margin-bottom: 20px; }
 .cta-block__title {
-  font-size: clamp(64px, 14vw, 168px);
-  margin-bottom: 32px;
+  font-size: clamp(60px, 13vw, 144px);
+  margin-bottom: 28px;
 }
 
 .cta-main {
@@ -417,9 +545,9 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   border-radius: 999px;
   padding: 16px 32px;
   cursor: pointer;
-  transition: background 200ms ease, transform 100ms ease;
+  transition: background 200ms var(--ease), transform 100ms var(--ease);
   min-height: 48px;
-  margin: 0 0 28px;
+  margin: 0 0 22px;
 }
 .cta-main:hover, .cta-main:focus-visible {
   background: var(--violet-2);
@@ -441,7 +569,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
    Footer
    ───────────────────────────────────────────────────────────────── */
 footer {
-  padding: 56px var(--gutter) 72px;
+  padding: 40px var(--gutter) 56px;
   border-top: 1px solid var(--line-soft);
   text-align: left;
   color: var(--ink-3);
@@ -454,7 +582,7 @@ footer {
    Amount-picker dialog — restrained, off-white, thin border.
    ───────────────────────────────────────────────────────────────── */
 .dialog {
-  border: none;
+  border: 1px solid var(--line);
   border-radius: 4px;
   padding: 0;
   width: min(440px, 92vw);
@@ -462,7 +590,6 @@ footer {
   color: var(--ink);
   font-family: var(--sans);
   box-shadow: 0 32px 80px rgba(10, 10, 10, 0.22);
-  border: 1px solid var(--line);
 }
 .dialog::backdrop { background: rgba(10, 10, 10, 0.42); }
 .dialog__inner { padding: 28px 26px; }
@@ -493,7 +620,7 @@ footer {
   border: 1px solid var(--line);
   border-radius: 999px;
   cursor: pointer;
-  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+  transition: border-color 150ms var(--ease), background 150ms var(--ease), color 150ms var(--ease);
 }
 .chip:hover, .chip:focus-visible {
   border-color: var(--ink);
@@ -522,7 +649,7 @@ footer {
   border-radius: 4px;
   background: var(--paper);
   color: var(--ink);
-  transition: border-color 150ms ease;
+  transition: border-color 150ms var(--ease);
 }
 .other input:focus { outline: none; border-color: var(--ink); }
 .other input[aria-invalid="true"] { border-color: var(--violet); }
@@ -584,20 +711,33 @@ footer {
 .toast.toast--soft { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
 
 /* ─────────────────────────────────────────────────────────────────
-   Scroll fade-in for sections (set by JS adding .in-view).
+   Scroll reveals — one easing, one duration family.
+   Each [data-reveal] is observed once and gets .in-view applied.
    ───────────────────────────────────────────────────────────────── */
-[data-section] {
+[data-reveal] {
   opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 700ms ease, transform 700ms ease;
+  transform: translateY(12px);
+  transition: opacity var(--t-reveal) var(--ease),
+              transform var(--t-reveal) var(--ease);
 }
-[data-section].in-view {
+[data-reveal].in-view {
   opacity: 1;
   transform: translateY(0);
 }
+/* Photo reveal: scale-down feel instead of translate */
+[data-reveal="photo"] {
+  opacity: 0;
+  transform: scale(1.03);
+  transition: opacity 450ms var(--ease),
+              transform 450ms var(--ease);
+}
+[data-reveal="photo"].in-view {
+  opacity: 1;
+  transform: scale(1);
+}
 
 /* ─────────────────────────────────────────────────────────────────
-   Goal-reached — subtle. No emoji, no pulse, no colour swap.
+   Goal-reached — restrained shift, no celebration FX.
    ───────────────────────────────────────────────────────────────── */
 body.goal-reached .strip__cta,
 body.goal-reached .cta-main {
@@ -605,16 +745,25 @@ body.goal-reached .cta-main {
 }
 body.goal-reached .strip__cta:hover,
 body.goal-reached .cta-main:hover { background: #2A2A2A; }
-body.goal-reached .strip__amounts [data-raised] { font-style: italic; font-family: var(--serif); font-weight: 400; }
+body.goal-reached .strip__amounts [data-raised] {
+  font-style: italic;
+  font-family: var(--serif);
+  font-weight: 400;
+}
 
 /* ─────────────────────────────────────────────────────────────────
    Reduced motion
    ───────────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .strip__fill, .strip__cta, .cta-main, .chip, .toast, [data-section] {
+  .strip, .strip__fill, .hero__fill,
+  .strip__cta, .cta-main, .chip, .toast,
+  [data-reveal], [data-reveal="photo"] {
     transition: none !important;
     animation: none !important;
   }
-  [data-section] { opacity: 1; transform: none; }
+  [data-reveal], [data-reveal="photo"] {
+    opacity: 1;
+    transform: none;
+  }
 }

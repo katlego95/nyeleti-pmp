@@ -11,6 +11,7 @@ const PAYFAST_MERCHANT_ID  = '__SANDBOX_MERCHANT_ID__';
 const PAYFAST_MERCHANT_KEY = '__SANDBOX_MERCHANT_KEY__';
 
 const GOAL_ZAR = 10000;
+const STRIP_H  = 56;   // must match --strip-h in style.css
 
 const $  = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
@@ -19,6 +20,7 @@ const formatRand = (n) =>
   'R' + Math.round(n).toLocaleString('en-ZA', { maximumFractionDigits: 0 });
 
 function renderProgress({ total_zar, goal_zar, percent }) {
+  $$('[data-amounts]').forEach((el) => el.classList.remove('amounts--failed'));
   $$('[data-bar-fill]').forEach((el) => { el.style.width = percent + '%'; });
   $$('[data-bar]').forEach((el)      => { el.setAttribute('aria-valuenow', String(percent)); });
   $$('[data-raised]').forEach((el)   => { el.textContent = formatRand(total_zar); });
@@ -30,9 +32,9 @@ function renderProgress({ total_zar, goal_zar, percent }) {
 }
 
 function renderFailureState() {
-  $$('[data-amounts]').forEach((el) => {
-    el.textContent = 'Updating shortly';
-  });
+  // Add a class — CSS hides the inner spans and shows "Updating shortly" via ::before.
+  // Children stay in DOM so a subsequent successful fetch can restore them.
+  $$('[data-amounts]').forEach((el) => el.classList.add('amounts--failed'));
 }
 
 async function fetchSummary() {
@@ -138,12 +140,36 @@ function handleReturnQuery() {
   }
 }
 
-function observeSectionFadeIn() {
-  const sections = $$('[data-section]');
-  if (!sections.length) return;
+// Hero-bar → sticky-strip transition. The signature motion.
+// When the hero bar is in view (visible below the strip's would-be zone), the
+// sticky strip is hidden. When it scrolls out, the strip fades/slides in.
+function wireStripToggle() {
+  const heroBar = $('[data-hero-bar]');
+  const strip = $('.strip');
+  if (!heroBar || !strip) return;
+  if (!('IntersectionObserver' in window)) {
+    strip.classList.add('strip--visible');   // no IO: strip stays visible
+    return;
+  }
+  const io = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) {
+      strip.classList.remove('strip--visible');
+    } else {
+      strip.classList.add('strip--visible');
+    }
+  }, {
+    rootMargin: `-${STRIP_H}px 0px 0px 0px`,
+    threshold: 0,
+  });
+  io.observe(heroBar);
+}
+
+function observeReveal() {
+  const els = $$('[data-reveal]');
+  if (!els.length) return;
   if (!('IntersectionObserver' in window) ||
       window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    sections.forEach((el) => el.classList.add('in-view'));
+    els.forEach((el) => el.classList.add('in-view'));
     return;
   }
   const io = new IntersectionObserver((entries) => {
@@ -153,15 +179,16 @@ function observeSectionFadeIn() {
         io.unobserve(entry.target);
       }
     }
-  }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
-  sections.forEach((el) => io.observe(el));
+  }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+  els.forEach((el) => io.observe(el));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Seed the goal text so the strip shows "R0 raised of R10,000" before /summary returns.
+  // Seed the goal text so the page shows "R0 raised of R10,000" before /summary returns.
   $$('[data-goal]').forEach((el) => { el.textContent = formatRand(GOAL_ZAR); });
   wireDialog();
   handleReturnQuery();
-  observeSectionFadeIn();
+  wireStripToggle();
+  observeReveal();
   fetchSummary();
 });

@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <!-- Mark JS available before paint so the sticky strip can default to hidden
+       without a flash. No-JS browsers keep the strip visible as graceful fallback. -->
+  <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 
@@ -31,21 +34,38 @@
 <main>
 
   <!-- ────────────────────  1. HERO  ──────────────────── -->
-  <section class="section section--hero" data-section>
+  <section class="section section--hero">
     <div class="hero">
-      <h1 class="display hero__title">
-        Help launch<br>Nyeleti's<br><em>PMP.</em>
-      </h1>
-      <p class="hero__sub">
-        A private crowdfund toward her PMI certification.
-      </p>
+      <div class="hero__head" data-reveal>
+        <h1 class="display hero__title">
+          Help launch<br>Nyeleti's<br><em>PMP.</em>
+        </h1>
+        <p class="hero__sub">
+          A private crowdfund toward her PMI certification.
+        </p>
+      </div>
+
+      <div class="hero__bar" data-hero-bar data-reveal>
+        <div class="hero__amount" data-amounts aria-live="polite">
+          <span class="hero__raised">
+            <span data-raised>R0</span>
+          </span>
+          <span class="hero__raised-label">
+            raised of <span data-goal>R10,000</span>
+          </span>
+        </div>
+        <div class="hero__track" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-bar>
+          <div class="hero__fill" data-bar-fill></div>
+        </div>
+        <button type="button" class="cta-main hero__cta" data-contribute>Contribute</button>
+      </div>
     </div>
   </section>
 
   <!-- ────────────────────  2. THE ASK  ──────────────────── -->
-  <section class="section section--ask" data-section>
-    <div class="ask">
-      <p class="kicker">The ask</p>
+  <section class="section section--ask">
+    <div class="ask" data-reveal>
+      <p class="kicker"><span class="kicker__num">01</span>The ask</p>
       <p class="ask__body">
         PMP &mdash; the Project Management Professional certification &mdash;
         is the global standard for project leaders. The path costs
@@ -56,50 +76,59 @@
   </section>
 
   <!-- ────────────────────  3. THE COST  ──────────────────── -->
-  <section class="section section--cost" data-section>
+  <section class="section section--cost">
     <div class="cost">
-      <p class="kicker">The cost</p>
-      <h2 class="section__title"><em>R10,000, broken down.</em></h2>
+      <div class="cost__head" data-reveal>
+        <p class="kicker"><span class="kicker__num">02</span>The cost</p>
+        <h2 class="section__title"><em>R10,000, broken down.</em></h2>
+        <p class="cost__supporting">
+          Two line items make up the goal. PMI membership first; the
+          member-rate exam after.
+        </p>
+      </div>
 
-      <dl class="cost-list">
-        <div class="cost-list__row">
-          <dt>
-            PMI Membership
-            <span class="cost-list__sub">annual</span>
-          </dt>
-          <dd>~R2,500</dd>
-        </div>
-        <div class="cost-list__row">
-          <dt>
-            PMP Exam Fee
-            <span class="cost-list__sub">PMI member rate</span>
-          </dt>
-          <dd>~R7,500</dd>
-        </div>
-        <div class="cost-list__row cost-list__row--total">
-          <dt>Total</dt>
-          <dd>R10,000</dd>
-        </div>
-      </dl>
-
-      <p class="cost__note">
-        Joining PMI first saves ~R4,500 vs the non-member rate.
-      </p>
+      <div class="cost__body" data-reveal>
+        <dl class="cost-list">
+          <div class="cost-list__row">
+            <dt>
+              PMI Membership
+              <span class="cost-list__sub">annual</span>
+            </dt>
+            <dd>~R2,500</dd>
+          </div>
+          <div class="cost-list__row">
+            <dt>
+              PMP Exam Fee
+              <span class="cost-list__sub">PMI member rate</span>
+            </dt>
+            <dd>~R7,500</dd>
+          </div>
+          <div class="cost-list__row cost-list__row--total">
+            <dt>Total</dt>
+            <dd>R10,000</dd>
+          </div>
+        </dl>
+        <p class="cost__note">
+          Joining PMI first saves ~R4,500 vs the non-member rate.
+        </p>
+      </div>
     </div>
   </section>
 
   <!-- ────────────────────  4. WHY THIS  ──────────────────── -->
-  <section class="section section--why" data-section>
+  <section class="section section--why">
     <div class="why">
-      <figure class="why__photo" aria-label="Photo of Nyeleti (coming)">
-        <!-- Replace with Katlego's supplied photo. Square-ish crop, ~600px.
-             Save the file to ./images/nyeleti.jpg and uncomment the line below.
-        <img src="./images/nyeleti.jpg" alt="Nyeleti" loading="lazy" />
-        -->
+      <figure class="why__photo" data-reveal="photo">
+        <!-- portrait ~2:3, supplied by Katlego.
+             Save to ./images/nyeleti.jpg. If absent, the elegant fallback below
+             (off-white block + "Photo coming" label) stays visible.
+             onerror removes the broken <img> so the fallback shows cleanly. -->
+        <img src="./images/nyeleti.jpg" alt="Nyeleti" loading="lazy" onerror="this.remove()">
+        <figcaption class="why__caption">Nyeleti</figcaption>
       </figure>
 
-      <div class="why__copy">
-        <p class="kicker">Why this</p>
+      <div class="why__copy" data-reveal>
+        <p class="kicker"><span class="kicker__num">03</span>Why this</p>
         <h2 class="section__title why__head">
           <em>The work, without<br>the credential.</em>
         </h2>
@@ -113,9 +142,9 @@
   </section>
 
   <!-- ────────────────────  5. CONTRIBUTE  ──────────────────── -->
-  <section class="section section--cta" data-section>
-    <div class="cta-block">
-      <p class="kicker">Be part of it</p>
+  <section class="section section--cta">
+    <div class="cta-block" data-reveal>
+      <p class="kicker"><span class="kicker__num">04</span>Be part of it</p>
       <h2 class="display cta-block__title"><em>Ready?</em></h2>
 
       <button type="button" class="cta-main" data-contribute>Contribute</button>
