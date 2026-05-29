@@ -2,6 +2,8 @@
 
 A single-page, mobile-first private crowdfunding site to help fund Nyeleti's PMP certification exam (goal: **R9,700 ZAR**). Contributors tap a button, pay by card or Instant EFT on PayFast's hosted checkout, and the on-site progress bar updates automatically when PayFast fires an ITN webhook to a Cloudflare Worker.
 
+> **Status (May 2026, post-pivot):** The architecture described from Part 2 onwards is the *original* PayFast + Cloudflare Worker design. After PayFast formally declined onboarding at KYC review (sole-trader donation collection isn't a permitted merchant category under their sponsor-bank agreement), the project pivoted to **BackaBuddy** as merchant-of-record. The Worker code, KV setup, MD5 verifier, unit tests, and all PayFast integration code remain in the repo as reference but are **not live in production**. The live site now links Contribute buttons to a BackaBuddy donation URL; the on-site progress bar is updated manually from two constants in `app.js`. See **Part 1.5** below for the full story.
+
 This README is the complete build specification. It also documents the *decision process* — what we considered, what we tried, what we rejected, and why. Read this section first if you ever build something similar; the technical spec below is only useful once the architectural decisions make sense.
 
 ---
@@ -87,7 +89,48 @@ Yoco is South Africa's most consumer-recognised online payment processor (their 
 
 ---
 
-# Part 2 — Architecture
+# Part 1.5 — The PayFast decline and pivot to BackaBuddy
+
+Part 1 ended with PayFast as the chosen rail and the Worker built against their ITN spec. After PayFast completed KYC review, that plan was formally declined. This section captures what happened, the regulatory stack underneath the decision, and the pivot to a merchant-of-record model. The lessons here are more important than the rest of Part 1 — they describe a structural limit in SA fintech that no amount of "shop around for a different gateway" solves.
+
+## PayFast decline (May 2026)
+
+After completing KYC review, PayFast formally declined onboarding. Their stated reason: as a Third-Party Payment Provider operating under a sponsor bank, their card-scheme and regulatory parameters don't accommodate sole traders collecting personal donations. Donation facilitation through them is only available to entities officially registered as NPO, NPC, or PBO.
+
+Verbatim from their email: *"We do facilitate donations; however, this is only available to organizations that are officially registered as an NPO, NPC, or PBO."*
+
+## The underlying legal stack (the real lesson)
+
+This isn't one statute — it's a layered constraint:
+
+- **National Payment System Act 78 of 1998.** Only registered banks (or SARB-designated entities) may clear/settle payments.
+- **PASA/SARB directives + Visa/Mastercard scheme rules.** A regulated acquirer must onboard a merchant under an approved merchant category. Individual donation collection doesn't map to one.
+- **FIC Act 38 of 2001 (FICA).** Third-party fund collection into a personal account is an AML red flag.
+- **PayFast's contract with its sponsor bank.** PayFast operates under a sponsor bank; their scheme agreement forbids onboarding sole traders for donation collection. It's a contract/compliance limit downstream of the law stack, not one named law.
+
+## Why no direct card gateway works for this case
+
+The same constraint applies to Yoco, Peach, Stripe (Paystack), Stitch direct, etc. Direct card acceptance for an individual collecting third-party donations into a personal account is structurally blocked in SA without NPO/NPC/PBO registration. The Yoco pause in Part 1 was operational noise; even if Yoco had been open for new activations, they'd have hit the same compliance wall once KYC review completed.
+
+## The pivot to BackaBuddy
+
+Moved to **BackaBuddy** as merchant-of-record. Operated by Blue Gecko (Pty) Ltd, 11+ years operating, R800M+ raised through the platform. Supports "Independent campaigns" for individuals — not just registered nonprofits — and explicitly serves the education category. BackaBuddy holds the regulated payment-collection relationship; Katlego is the verified beneficiary, funds land in his personal bank account after BackaBuddy completes its own KYC/FICA on him.
+
+## Site role after the pivot
+
+The GitHub Pages site is now the editorial story page — the front door. BackaBuddy is the payment engine. Contribute buttons open the BackaBuddy donation URL in a new tab. The progress bar on this site is manually updated by editing two constants in `app.js` (`RAISED_ZAR` and `GOAL_ZAR`); the canonical live number lives on the BackaBuddy campaign page, linked from below the hero bar.
+
+## What changed in the codebase
+
+The Cloudflare Worker (`worker/`), Workers KV, PayFast ITN webhook handler, MD5 signature verification, IP allowlist, and unit tests are all retained in the repo but no longer wired into the live site. They're preserved as reference for the original PayFast architecture and may be useful for future fundraisers that DO qualify (registered entities), or for the broader payments business idea this project surfaced.
+
+## Broader insight (briefly)
+
+The PayFast decline surfaced a real gap in SA fintech: individual/informal collectors of card payments are structurally underserved by every major gateway because of the card-scheme + sponsor-bank constraint. The market is moving toward A2A (account-to-account) rails — PayShap's Request-to-Pay feature in particular routes around card-scheme limitations and is bank-backed. A future Blackware product opportunity sits in that space — out of scope for this fundraiser, captured here for future reference.
+
+---
+
+# Part 2 — Architecture *(original architecture — retained in repo, not live in production after the BackaBuddy pivot)*
 
 ```
 ┌───────────────────────────────────────────────────────────────────────┐
@@ -139,7 +182,7 @@ All three must pass for the Worker to write to KV.
 
 ---
 
-# Part 3 — Stack
+# Part 3 — Stack *(original architecture — retained in repo, not live in production after the BackaBuddy pivot)*
 
 | Layer | Choice |
 |---|---|

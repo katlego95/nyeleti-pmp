@@ -27,7 +27,7 @@
     <div class="strip__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-bar>
       <div class="strip__fill" data-bar-fill></div>
     </div>
-    <button type="button" class="strip__cta" data-contribute>Contribute</button>
+    <a href="https://backabuddy.co.za/donation/nyeleit-pmp-certification" target="_blank" rel="noopener noreferrer" class="strip__cta" data-contribute>Contribute</a>
   </div>
 </header>
 
@@ -68,7 +68,10 @@
             <div class="hero__fill" data-bar-fill></div>
           </div>
         </div>
-        <button type="button" class="cta-main hero__cta staged" data-contribute style="--stage:7">Contribute</button>
+        <a href="https://backabuddy.co.za/donation/nyeleit-pmp-certification" target="_blank" rel="noopener noreferrer" class="cta-main hero__cta staged" data-contribute style="--stage:7">Contribute</a>
+        <p class="cta-meta">
+          <a href="https://backabuddy.co.za/campaign/nyeleit-pmp-certification" target="_blank" rel="noopener noreferrer">Track live progress on BackaBuddy &rarr;</a>
+        </p>
       </div>
     </div>
   </section>
@@ -170,9 +173,9 @@
       <div class="cta-block" data-reveal>
         <h2 class="display cta-block__title"><em>Ready?</em></h2>
 
-        <button type="button" class="cta-main" data-contribute>Contribute</button>
+        <a href="https://backabuddy.co.za/donation/nyeleit-pmp-certification" target="_blank" rel="noopener noreferrer" class="cta-main" data-contribute>Contribute</a>
 
-        <p class="cta-meta">Card or Instant EFT &middot; Secure via PayFast</p>
+        <p class="cta-meta">Secure payments via BackaBuddy</p>
         <p class="cta-meta cta-meta--fine">
           Contributions are voluntary gifts toward Nyeleti's certification
           and are final once processed.
@@ -186,53 +189,6 @@
 <footer>
   <small>Thank you for being here. &mdash; K</small>
 </footer>
-
-<!-- ────────────────────  DIALOG  ──────────────────── -->
-<dialog id="amount-dialog" class="dialog" aria-labelledby="dialog-title">
-  <form method="dialog" class="dialog__inner" id="amount-form">
-    <p class="kicker dialog__kicker">Contribute</p>
-    <h2 id="dialog-title" class="dialog__title"><em>Choose an amount.</em></h2>
-
-    <div class="chips" role="group" aria-label="Suggested amounts">
-      <button type="button" class="chip" data-amount="100">R100</button>
-      <button type="button" class="chip" data-amount="200">R200</button>
-      <button type="button" class="chip" data-amount="500">R500</button>
-      <button type="button" class="chip" data-amount="1000">R1 000</button>
-    </div>
-
-    <label class="other">
-      <span class="other__label">Or another amount (R)</span>
-      <input type="number" id="custom-amount" min="10" max="100000" step="1" inputmode="decimal" placeholder="e.g. 350" autocomplete="off">
-    </label>
-
-    <p class="dialog__fine">
-      PayFast deducts a small processing fee (~3%) so the bar reflects what
-      actually reaches Nyeleti.
-    </p>
-    <p class="dialog__fine">
-      Contributions are voluntary gifts toward Nyeleti's certification and
-      are final once processed.
-    </p>
-
-    <div class="dialog__actions">
-      <button type="button" class="dialog__cancel" id="amount-cancel">Cancel</button>
-      <button type="submit" class="dialog__confirm" id="amount-confirm">Continue to payment</button>
-    </div>
-  </form>
-</dialog>
-
-<form id="payfast-form" action="" method="post" hidden>
-  <input type="hidden" name="merchant_id">
-  <input type="hidden" name="merchant_key">
-  <input type="hidden" name="return_url">
-  <input type="hidden" name="cancel_url">
-  <input type="hidden" name="notify_url">
-  <input type="hidden" name="item_name" value="Contribution to Nyeleti's PMP">
-  <input type="hidden" name="email_confirmation" value="1">
-  <input type="hidden" name="amount" id="payfast-amount">
-</form>
-
-<div id="toast" class="toast" role="status" hidden></div>
 
 <script src="app.js" defer></script>
 </body>
