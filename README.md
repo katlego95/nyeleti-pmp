@@ -114,7 +114,7 @@ The same constraint applies to Yoco, Peach, Stripe (Paystack), Stitch direct, et
 
 ## The pivot to BackaBuddy
 
-Moved to **BackaBuddy** as merchant-of-record. Operated by Blue Gecko (Pty) Ltd, 11+ years operating, R800M+ raised through the platform. Supports "Independent campaigns" for individuals — not just registered nonprofits — and explicitly serves the education category. BackaBuddy holds the regulated payment-collection relationship.
+Moved to **BackaBuddy** as merchant-of-record. Supports "Independent campaigns" for individuals — not just registered nonprofits — and explicitly serves the education category. BackaBuddy holds the regulated payment-collection relationship.
 
 ## Site role after the pivot
 
