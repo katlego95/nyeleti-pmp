@@ -449,19 +449,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   white-space: nowrap;
 }
 @media (max-width: 767px) {
-  /* Annotations visible on mobile with smaller sizing and a right-anchored
-     100% note so nothing clips past the viewport edge. The hero__bar and
-     hero__bar-group gaps grow to host the annotations vertically. */
-  .hero__bar       { gap: 32px; }
-  .hero__bar-group { gap: 32px; }
-  .hero__note svg       { width: 24px; height: 14px; }
-  .hero__note-label     { font-size: 9px; letter-spacing: 0.14em; }
-  .hero__note--right-edge {
-    transform: translateX(-100%) translateY(4px) rotate(var(--rot, 0));
-  }
-  .is-loaded .hero__note--right-edge {
-    transform: translateX(-100%) translateY(0) rotate(var(--rot, 0));
-  }
+  .hero__annotations { display: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -971,13 +959,5 @@ body.goal-reached .strip__amounts [data-raised] {
   .hero__note {
     opacity: 1;
     transform: translateX(-50%) rotate(var(--rot, 0));
-  }
-}
-
-/* Reduced-motion + mobile: keep the 100% annotation right-anchored so it
-   doesn't clip past the viewport when motion is disabled. */
-@media (prefers-reduced-motion: reduce) and (max-width: 767px) {
-  .hero__note--right-edge {
-    transform: translateX(-100%) rotate(var(--rot, 0));
   }
 }
