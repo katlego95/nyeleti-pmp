@@ -114,11 +114,11 @@ The same constraint applies to Yoco, Peach, Stripe (Paystack), Stitch direct, et
 
 ## The pivot to BackaBuddy
 
-Moved to **BackaBuddy** as merchant-of-record. Operated by Blue Gecko (Pty) Ltd, 11+ years operating, R800M+ raised through the platform. Supports "Independent campaigns" for individuals — not just registered nonprofits — and explicitly serves the education category. BackaBuddy holds the regulated payment-collection relationship; Katlego is the verified beneficiary, funds land in his personal bank account after BackaBuddy completes its own KYC/FICA on him.
+Moved to **BackaBuddy** as merchant-of-record. Operated by Blue Gecko (Pty) Ltd, 11+ years operating, R800M+ raised through the platform. Supports "Independent campaigns" for individuals — not just registered nonprofits — and explicitly serves the education category. BackaBuddy holds the regulated payment-collection relationship.
 
 ## Site role after the pivot
 
-The GitHub Pages site is now the editorial story page — the front door. BackaBuddy is the payment engine. Contribute buttons open the BackaBuddy donation URL in a new tab. The progress bar on this site is manually updated by editing two constants in `app.js` (`RAISED_ZAR` and `GOAL_ZAR`); the canonical live number lives on the BackaBuddy campaign page, linked from below the hero bar.
+The GitHub Pages site is the editorial story page — the front door. BackaBuddy is the payment engine. BackaBuddy is operated by Blue Gecko (Pty) Ltd, has been running for 11+ years, and has facilitated over R800M in donations across the platform — a trusted, established South African crowdfunding operator. Contribute buttons across the site open the BackaBuddy donation URL in a new tab. The link to the BackaBuddy campaign page itself (for donors who want to see live progress, total raised, donor count, etc.) lives in one place only — below the hero progress bar — and nowhere else. Everywhere else on the site goes straight to the donation page. The progress bar on this site is manually updated by editing two constants in `app.js` (`RAISED_ZAR` and `GOAL_ZAR`); the canonical live number lives on BackaBuddy.
 
 ## What changed in the codebase
 
