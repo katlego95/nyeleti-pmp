@@ -273,7 +273,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   font-family: var(--serif);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(120px, 16vw, 220px);
+  font-size: clamp(160px, 22vw, 320px);
   line-height: 0.9;
   letter-spacing: -0.03em;
   color: var(--ink);
