@@ -14,18 +14,50 @@ const prefersReducedMotion = () =>
 const formatRand = (n) =>
   'R' + Math.round(n).toLocaleString('en-ZA', { maximumFractionDigits: 0 });
 
+// Bar-fill animation timing must match the CSS transition on .hero__fill /
+// .strip__fill: width var(--t-bar) ease-out, delayed --t-bar-delay so it fires
+// after the staged hero arrival completes.
+const BAR_DELAY_MS = 1000;
+const BAR_DURATION_MS = 1400;
+
 function renderProgress() {
   const percent = GOAL_ZAR > 0
     ? Math.min(100, Math.round((RAISED_ZAR / GOAL_ZAR) * 100))
     : 0;
   $$('[data-bar-fill]').forEach((el) => { el.style.width = percent + '%'; });
   $$('[data-bar]').forEach((el)      => { el.setAttribute('aria-valuenow', String(percent)); });
-  $$('[data-raised]').forEach((el)   => { el.textContent = formatRand(RAISED_ZAR); });
   $$('[data-goal]').forEach((el)     => { el.textContent = formatRand(GOAL_ZAR); });
+  if (prefersReducedMotion()) {
+    $$('[data-raised]').forEach((el) => { el.textContent = formatRand(RAISED_ZAR); });
+  } else {
+    animateCountUp(RAISED_ZAR, BAR_DELAY_MS, BAR_DURATION_MS);
+  }
   if (percent >= 100) {
     document.body.classList.add('goal-reached');
     $$('[data-contribute]').forEach((el) => { el.textContent = 'Thank you'; });
   }
+}
+
+// Count-up from R0 to target, synced with the bar-fill CSS transition.
+// Cubic ease-out matches the CSS `cubic-bezier(0.16, 1, 0.3, 1)` closely enough
+// that the number and bar arrive together visually.
+function animateCountUp(targetN, delay, duration) {
+  const els = $$('[data-raised]');
+  if (!els.length) return;
+  // Seed at R0 so the eye registers the starting state before the animation.
+  els.forEach((el) => { el.textContent = formatRand(0); });
+  setTimeout(() => {
+    const start = performance.now();
+    function tick(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const value = targetN * eased;
+      els.forEach((el) => { el.textContent = formatRand(value); });
+      if (t < 1) requestAnimationFrame(tick);
+      else els.forEach((el) => { el.textContent = formatRand(targetN); });
+    }
+    requestAnimationFrame(tick);
+  }, delay);
 }
 
 // Hero-bar → sticky-strip transition. The signature motion.

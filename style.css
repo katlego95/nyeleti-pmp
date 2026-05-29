@@ -28,7 +28,8 @@
   --t-reveal:    420ms;
   --t-stage:     480ms;
   --t-strip:     280ms;
-  --t-bar:       900ms;
+  --t-bar:       1400ms;
+  --t-bar-delay: 1000ms;
   --t-rule:      500ms;
   --t-ghost:     800ms;
   --stage-step:  70ms;
@@ -127,7 +128,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   width: 0%;
   background: var(--violet);
   border-radius: 999px;
-  transition: width var(--t-bar) var(--ease);
+  transition: width var(--t-bar) var(--ease) var(--t-bar-delay);
 }
 .strip__cta {
   flex: 0 0 auto;
@@ -272,7 +273,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   font-family: var(--serif);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(160px, 22vw, 320px);
+  font-size: clamp(120px, 16vw, 220px);
   line-height: 0.9;
   letter-spacing: -0.03em;
   color: var(--ink);
@@ -286,7 +287,7 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 }
 .is-loaded .hero__ghost { opacity: 0.07; }
 
-@media (max-width: 880px) {
+@media (max-width: 767px) {
   .hero__ghost {
     font-size: clamp(80px, 22vw, 150px);
     right: 0;
@@ -385,6 +386,10 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 }
 .hero__goal-label [data-goal] { color: var(--ink-2); font-weight: 600; }
 
+.hero__track-wrap {
+  position: relative;
+  width: 100%;
+}
 .hero__track {
   width: 100%;
   height: 8px;
@@ -397,7 +402,54 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
   width: 0%;
   background: var(--violet);
   border-radius: 999px;
-  transition: width var(--t-bar) var(--ease);
+  transition: width var(--t-bar) var(--ease) var(--t-bar-delay);
+}
+
+/* ─── Hero progress-bar sketch annotations (desktop only) ─── */
+.hero__annotations {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero__note {
+  position: absolute;
+  left: var(--x);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--ink);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(4px) rotate(var(--rot, 0));
+  transition: opacity 400ms var(--ease), transform 400ms var(--ease);
+  transition-delay: calc(2400ms + var(--i, 0) * 200ms);
+}
+.is-loaded .hero__note {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) rotate(var(--rot, 0));
+}
+.hero__note--above { bottom: calc(100% + 4px); }
+.hero__note--below { top: calc(100% + 4px); }
+.hero__note svg {
+  width: 30px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 1;
+  fill: none;
+  overflow: visible;
+}
+.hero__note-label {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+@media (max-width: 767px) {
+  .hero__annotations { display: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -413,6 +465,29 @@ a:hover, a:focus-visible { color: var(--violet); outline: none; }
 .is-loaded .staged {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Hero — desktop tightening (>=768px) so headline + bar + button +
+   "Track live progress" all fit within 100vh on a standard 1440x900.
+   Mobile (<768px) keeps the base rules unchanged.
+   ───────────────────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .section--hero {
+    padding-top: clamp(28px, 4vw, 56px);
+    padding-bottom: clamp(36px, 5vw, 72px);
+  }
+  .display {
+    font-size: clamp(56px, 6.5vw, 86px);
+    line-height: 0.94;
+  }
+  .hero        { gap: clamp(24px, 3vw, 36px); }
+  .hero__head  { gap: 16px; }
+  /* Wider gaps above and below the track so the sketch annotations
+     have room without crowding the amount header or the Contribute button. */
+  .hero__bar   { gap: 32px; }
+  .hero__bar-group { gap: 32px; }
+  .hero__raised { font-size: clamp(40px, 5vw, 60px); }
 }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -868,7 +943,7 @@ body.goal-reached .strip__amounts [data-raised] {
   .strip__cta, .cta-main, .chip, .toast,
   .staged, [data-reveal], [data-reveal="photo"],
   [data-reveal-stagger] > *,
-  [data-reveal-rule]::before, .hero__ghost {
+  [data-reveal-rule]::before, .hero__ghost, .hero__note {
     transition: none !important;
     animation: none !important;
   }
@@ -881,4 +956,8 @@ body.goal-reached .strip__amounts [data-raised] {
     transform: translateX(-50%) scaleX(1);
   }
   .hero__ghost { opacity: 0.07; }
+  .hero__note {
+    opacity: 1;
+    transform: translateX(-50%) rotate(var(--rot, 0));
+  }
 }
