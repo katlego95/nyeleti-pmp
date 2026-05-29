@@ -24,7 +24,17 @@ function renderProgress() {
   const percent = GOAL_ZAR > 0
     ? Math.min(100, Math.round((RAISED_ZAR / GOAL_ZAR) * 100))
     : 0;
-  $$('[data-bar-fill]').forEach((el) => { el.style.width = percent + '%'; });
+  // iOS Safari transition race: setting style.width synchronously at
+  // DOMContentLoaded can cause the engine to skip the CSS width transition
+  // entirely (the initial 0% state from the stylesheet hasn't been committed
+  // to a paint frame yet). Double-rAF defers the change until after first
+  // paint so the transition fires correctly on mobile Safari. Desktop sees
+  // an imperceptible ~32ms shift; transition timing is otherwise identical.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      $$('[data-bar-fill]').forEach((el) => { el.style.width = percent + '%'; });
+    });
+  });
   $$('[data-bar]').forEach((el)      => { el.setAttribute('aria-valuenow', String(percent)); });
   $$('[data-goal]').forEach((el)     => { el.textContent = formatRand(GOAL_ZAR); });
   if (prefersReducedMotion()) {
