@@ -1,5 +1,5 @@
 // === UPDATE THESE TWO NUMBERS AS DONATIONS COME IN ===
-const RAISED_ZAR = 2000;     // current amount raised (check BackaBuddy dashboard)
+const RAISED_ZAR = 6500;     // current amount raised (check BackaBuddy dashboard)
 const GOAL_ZAR = 10000;      // total goal
 // =====================================================
 
